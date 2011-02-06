@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.ui;
+package net.erdfelt.android.sdkfido.ui.utils;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;

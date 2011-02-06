@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.ui;
+package net.erdfelt.android.sdkfido.ui.utils;
 
 import java.awt.Dimension;
 

@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.ui;
+package net.erdfelt.android.sdkfido.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Font;

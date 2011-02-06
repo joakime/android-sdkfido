@@ -1,9 +1,10 @@
-package net.erdfelt.android.sdkfido.ui;
+package net.erdfelt.android.sdkfido.ui.utils;
 
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JTextField;
+
 
 public class DirectoryPicker extends JButton {
     private static final long serialVersionUID = -2267073837659182425L;

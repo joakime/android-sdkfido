@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.ui;
+package net.erdfelt.android.sdkfido.ui.panels;
 
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -19,6 +19,8 @@ import net.erdfelt.android.sdkfido.ui.actions.ActionTarget;
 import net.erdfelt.android.sdkfido.ui.debug.DebugFrame;
 import net.erdfelt.android.sdkfido.ui.layout.CommonStyles;
 import net.erdfelt.android.sdkfido.ui.layout.GBCStyles;
+import net.erdfelt.android.sdkfido.ui.utils.DirectoryPicker;
+import net.erdfelt.android.sdkfido.ui.utils.TableUtils;
 
 public class WorkDirPanel extends JPanel {
     private static final long  serialVersionUID = 7744574839920516820L;

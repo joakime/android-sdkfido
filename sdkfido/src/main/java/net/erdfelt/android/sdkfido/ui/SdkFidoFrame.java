@@ -34,6 +34,9 @@ import net.erdfelt.android.sdkfido.ui.actions.ActionMapper;
 import net.erdfelt.android.sdkfido.ui.actions.ActionTarget;
 import net.erdfelt.android.sdkfido.ui.actions.KeyAction;
 import net.erdfelt.android.sdkfido.ui.layout.GBC;
+import net.erdfelt.android.sdkfido.ui.panels.ConsoleView;
+import net.erdfelt.android.sdkfido.ui.panels.SdkFetchPanel;
+import net.erdfelt.android.sdkfido.ui.panels.WorkDirPanel;
 
 import org.apache.commons.lang.SystemUtils;
 
