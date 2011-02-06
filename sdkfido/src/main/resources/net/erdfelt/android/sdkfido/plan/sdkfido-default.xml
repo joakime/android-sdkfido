@@ -1,0 +1,29 @@
+<android-source spec-version="1">
+	<repo id="base"
+		uri="git://android.git.kernel.org/platform/frameworks/base.git" />
+	<version id="1.5" codename="cupcake" apilevel="3">
+		<tag name="android-sdk-1.5_r3" repo-id="base">
+			<include>core/java</include>
+		</tag>
+	</version>
+	<version id="1.6" codename="donut" apilevel="4">
+		<tag repo-id="base" name="android-sdk-1.6_r1">
+			<include>core/java</include>
+		</tag>
+	</version>
+	<version id="2.0" codename="eclair" apilevel="5">
+		<tag repo-id="base" name="android-sdk-2.0.1_r1">
+			<include>core/java</include>
+		</tag>
+	</version>
+	<version id="2.1" codename="eclair" apilevel="7">
+		<tag repo-id="base" name="android-sdk-2.1_r1">
+			<include>core/java</include>
+		</tag>
+	</version>
+	<version id="2.2" codename="froyo" apilevel="8">
+		<tag repo-id="base" name="android-sdk-2.2_r1.1">
+			<include>core/java</include>
+		</tag>
+	</version>
+</android-source>
