@@ -3,6 +3,7 @@ package net.erdfelt.android.sdkfido.ui;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -60,13 +61,16 @@ public class ConsoleView extends JPanel {
         @Override
         public void publish(LogRecord record) {
             StringBuilder buf = new StringBuilder();
-            buf.append("[").append(record.getLevel().getName());
+            if(record.getLevel() != Level.INFO) {
+                buf.append("[").append(record.getLevel().getName());
+                buf.append("] ");
+            }
             String name = record.getLoggerName();
             int idx = name.lastIndexOf('.');
             if(idx>0) {
                 name= name.substring(idx+1);
             }
-            buf.append("] ").append(name);
+            buf.append(name);
             buf.append(": ").append(record.getMessage());
             buf.append("\n");
 

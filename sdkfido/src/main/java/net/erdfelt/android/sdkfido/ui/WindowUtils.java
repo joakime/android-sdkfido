@@ -4,7 +4,10 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 
@@ -27,6 +30,16 @@ public class WindowUtils {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension screenSize = tk.getScreenSize();
         Point screenCenter = new Point(screenSize.width / 2, screenSize.height / 2);
+        Point winCenterRelative = new Point(win.getSize().width / 2, win.getSize().height / 2);
+        win.setLocation((screenCenter.x - winCenterRelative.x), (screenCenter.y - winCenterRelative.y));
+    }
+
+    public static void centerWindowOnPrimaryScreen(Window win) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        
+        Rectangle bounds = gs[0].getDefaultConfiguration().getBounds();
+        Point screenCenter = new Point(bounds.width / 2, bounds.height / 2);
         Point winCenterRelative = new Point(win.getSize().width / 2, win.getSize().height / 2);
         win.setLocation((screenCenter.x - winCenterRelative.x), (screenCenter.y - winCenterRelative.y));
     }
