@@ -12,14 +12,14 @@ import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 
-import net.erdfelt.android.sdkfido.Main;
+import net.erdfelt.android.sdkfido.logging.Logging;
 import net.erdfelt.android.sdkfido.ui.utils.WindowUtils;
 
 public class DebugFrame extends JFrame {
     private static final long serialVersionUID = -4480425800072583247L;
     
     static {
-        Main.initLogging();
+        Logging.config();
     }
 
     public DebugFrame(Component component) {

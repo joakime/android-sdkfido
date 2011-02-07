@@ -11,4 +11,11 @@
   <artifactId>sdkfido-ui</artifactId>
   <packaging>jar</packaging>
   <name>SDKFido :: GUI Client</name>
+  <dependencies>
+    <dependency>
+      <groupId>net.erdfelt.android.sdkfido</groupId>
+      <artifactId>sdkfido-lib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>
