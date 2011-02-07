@@ -24,7 +24,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.logging.Logger;
 
-import net.erdfelt.android.sdkfido.Prefs;
 
 public class WindowHandler extends WindowAdapter {
     @SuppressWarnings("unused")

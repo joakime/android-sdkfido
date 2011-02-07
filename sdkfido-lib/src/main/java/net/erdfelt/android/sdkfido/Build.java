@@ -11,8 +11,8 @@ import org.apache.commons.io.IOUtils;
 
 public final class Build {
     private static final Logger LOG         = Logger.getLogger(Build.class.getName());
-    private static final String GROUP_ID    = "net.erdfelt.android";
-    private static final String ARTIFACT_ID = "android-sdkfido";
+    private static final String GROUP_ID    = "net.erdfelt.android.sdkfido";
+    private static final String ARTIFACT_ID = "sdkfido-lib";
 
     private static String       version;
 

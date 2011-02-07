@@ -29,7 +29,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.erdfelt.android.sdkfido.Build;
-import net.erdfelt.android.sdkfido.Prefs;
 import net.erdfelt.android.sdkfido.ui.actions.ActionMapper;
 import net.erdfelt.android.sdkfido.ui.actions.ActionTarget;
 import net.erdfelt.android.sdkfido.ui.actions.KeyAction;

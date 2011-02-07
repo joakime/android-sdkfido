@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido;
+package net.erdfelt.android.sdkfido.ui;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
