@@ -2,10 +2,13 @@ package net.erdfelt.android.sdkfido.local;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -13,6 +16,8 @@ import java.util.logging.Logger;
 import net.erdfelt.android.sdkfido.sdks.AndroidSdks;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * This represents the locally installed Android Java SDK as downloaded from <a
@@ -23,17 +28,96 @@ import org.apache.commons.io.IOUtils;
 public class LocalAndroidPlatforms {
     private static final Logger LOG = Logger.getLogger(LocalAndroidPlatforms.class.getName());
 
-    public static LocalAndroidPlatforms findLocalJavaSdk() {
-        // TODO:
-        return null;
+    /**
+     * Attempt to find the local java sdk using the most common environment variables.
+     * 
+     * @return the local android java sdk
+     * @throws IOException
+     *             if unable to load the default local java sdk
+     */
+    public static LocalAndroidPlatforms findLocalJavaSdk() throws IOException {
+        StringBuilder err = new StringBuilder();
+        err.append("Unable to find the Local Android Java SDK Folder.");
+
+        // Check Environment Variables First
+        String envKeys[] = { "ANDROID_HOME", "ANDROID_SDK_ROOT" };
+        for (String envKey : envKeys) {
+            File sdkHome = getEnvironmentVariableDir(err, envKey);
+            if (sdkHome == null) {
+                continue; // skip, not found on that key
+            }
+            LocalAndroidPlatforms platforms = new LocalAndroidPlatforms(sdkHome);
+            if (platforms.valid()) {
+                return platforms;
+            }
+        }
+
+        // Check Path for possible android.exe (or similar)
+        List<String> searchBins = new ArrayList<String>();
+        if (SystemUtils.IS_OS_WINDOWS) {
+            searchBins.add("adb.exe");
+            searchBins.add("emulator.exe");
+            searchBins.add("android.exe");
+        } else {
+            searchBins.add("adb");
+            searchBins.add("emulator");
+            searchBins.add("android");
+        }
+
+        String pathParts[] = StringUtils.split(System.getenv("PATH"), File.pathSeparatorChar);
+        for (String searchBin : searchBins) {
+            err.append("\nSearched PATH for ").append(searchBin);
+            for (String pathPart : pathParts) {
+                File pathDir = new File(pathPart);
+                LOG.fine("Searching Path: " + pathDir);
+                File bin = new File(pathDir, searchBin);
+                if (bin.exists() && bin.isFile() && bin.canExecute()) {
+                    File homeDir = bin.getParentFile().getParentFile();
+                    LOG.fine("Possible Home Dir: " + homeDir);
+                    LocalAndroidPlatforms platforms = new LocalAndroidPlatforms(homeDir);
+                    if (platforms.valid) {
+                        return platforms;
+                    }
+                }
+            }
+            err.append(", not found.");
+        }
+
+        throw new FileNotFoundException(err.toString());
+    }
+
+    private static File getEnvironmentVariableDir(StringBuilder err, String key) {
+        err.append("\nThe environment variable ").append(key);
+        String androidHome = System.getenv(key);
+        if (androidHome == null) {
+            err.append(" was not set.");
+            return null;
+        }
+
+        err.append(" = ").append(androidHome);
+        File androidHomeDir = new File(androidHome);
+        if (!androidHomeDir.exists()) {
+            err.append("\nHowever, that directory does not seem to exist.");
+            return null;
+        }
+
+        if (!androidHomeDir.isDirectory()) {
+            err.append("\nHowever, that path does not seem to be a directory.");
+            return null;
+        }
+
+        return androidHomeDir;
     }
 
     private File                         homeDir;
     private int                          sdkRelease;
+    private boolean                      valid;
     private Map<String, AndroidPlatform> platforms;
 
     public LocalAndroidPlatforms(File dir) throws IOException {
         this.homeDir = dir;
+        this.valid = false;
+
         this.platforms = new HashMap<String, AndroidPlatform>();
         if (!this.homeDir.exists()) {
             LOG.warning("Directory does not exist: " + this.homeDir);
@@ -44,11 +128,37 @@ public class LocalAndroidPlatforms {
         loadPlatformsDir();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("LocalAndroidPlatforms [homeDir=");
+        builder.append(homeDir);
+        builder.append(", sdkRelease=");
+        builder.append(sdkRelease);
+        builder.append(", platforms=[");
+
+        boolean delim = false;
+        for (AndroidPlatform platform : platforms.values()) {
+            if (delim) {
+                builder.append(",");
+            }
+            builder.append(platform.getId());
+            delim = true;
+        }
+
+        builder.append("]]");
+        return builder.toString();
+    }
+
     public void addPlatform(AndroidPlatform platform) {
         if (platform == null) {
             return;
         }
         this.platforms.put(platform.getId(), platform);
+    }
+
+    public boolean valid() {
+        return valid;
     }
 
     public boolean exists() {
@@ -137,6 +247,7 @@ public class LocalAndroidPlatforms {
 
         Properties props = loadProperties(sourcePropFile);
         this.sdkRelease = toInt(props.getProperty("Pkg.Revision"));
+        this.valid = true;
     }
 
     public int size() {

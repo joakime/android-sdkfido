@@ -16,7 +16,20 @@ public class LocalAndroidPlatformsTest {
     static {
         Logging.config();
     }
-    
+
+    /**
+     * Doesn't assert anything, just used to exercise the code.
+     */
+    @Test
+    public void testFindLocalJavaSdk() {
+        try {
+            LocalAndroidPlatforms platforms = LocalAndroidPlatforms.findLocalJavaSdk();
+            System.out.println("LocalAndroidPlatforms = " + platforms);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testPlatformSdk06() throws IOException {
         File sdkDir = MavenTestingUtils.getTestResourceDir("dummy-local-java-sdks/sdk_r06");
