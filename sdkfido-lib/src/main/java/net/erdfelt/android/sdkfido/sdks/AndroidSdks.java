@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * This represents the available SDKs as prepared by the <code>sdks.xml</code> file present within the jar file.
+ * <p>
+ * Note: This does not represent the  
+ */
 public class AndroidSdks implements Iterable<Sdk> {
     private int                 specVersion = 0;
     private Map<String, String> props       = new HashMap<String, String>();
@@ -14,7 +19,7 @@ public class AndroidSdks implements Iterable<Sdk> {
      */
     private Map<String, Sdk>    sdkMap      = new HashMap<String, Sdk>();
 
-    public void addSdkOrigin(Sdk sdk) {
+    public void addSdk(Sdk sdk) {
         sdkMap.put(sdk.getId(), sdk);
     }
 

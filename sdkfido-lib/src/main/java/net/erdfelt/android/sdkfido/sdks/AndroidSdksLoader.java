@@ -49,7 +49,7 @@ public final class AndroidSdksLoader {
         digester.addCallMethod("android-source/sdk/repo/include", "addInclude", 1);
         digester.addCallParam("android-source/sdk/repo/include", 0);
         digester.addSetNext("android-source/sdk/repo", "addRepo");
-        digester.addSetNext("android-source/sdk", "addSdkOrigin");
+        digester.addSetNext("android-source/sdk", "addSdk");
 
         return (AndroidSdks) digester.parse(url);
     }
