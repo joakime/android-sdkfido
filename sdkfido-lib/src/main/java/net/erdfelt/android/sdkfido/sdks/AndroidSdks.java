@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * This represents the available SDKs as prepared by the <code>sdks.xml</code> file present within the jar file.
  * <p>
- * Note: This does not represent the  
+ * Note: This does not represent the local android sdks present on the users system.
  */
 public class AndroidSdks implements Iterable<Sdk> {
     private int                 specVersion = 0;
