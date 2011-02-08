@@ -22,5 +22,7 @@ public final class Logging {
                 IOUtils.closeQuietly(in);
             }
         }
+
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.Jdk14Logger");
     }
 }
