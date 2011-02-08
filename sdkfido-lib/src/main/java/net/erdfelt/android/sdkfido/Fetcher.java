@@ -13,14 +13,44 @@ public class Fetcher {
     private File                  projectsDir;
     private LocalAndroidPlatforms platforms;
     private Config                config;
+    private boolean               generateMavenBuild = true;
+    private boolean               generateAntBuild   = false;
 
-    public void setConfig(Config config) throws IOException {
-        this.config = config;
-        this.sdks = AndroidSdksLoader.load();
+    public Config getConfig() {
+        return config;
+    }
 
-        reconfigurePlatformsDir();
-        reconfigureWorkDir();
-        reconfigureProjectsDir();
+    public LocalAndroidPlatforms getPlatforms() {
+        return platforms;
+    }
+
+    public File getProjectsDir() {
+        return projectsDir;
+    }
+
+    public AndroidSdks getSdks() {
+        return sdks;
+    }
+
+    public WorkDir getWorkdir() {
+        return workdir;
+    }
+
+    public boolean isGenerateAntBuild() {
+        return generateAntBuild;
+    }
+
+    public boolean isGenerateMavenBuild() {
+        return generateMavenBuild;
+    }
+
+    public void reconfigurePlatformsDir() throws IOException {
+        File platformsDir = config.getFile("platforms.dir");
+        if (platformsDir != null) {
+            platforms = new LocalAndroidPlatforms(platformsDir);
+        } else {
+            platforms = LocalAndroidPlatforms.findLocalJavaSdk();
+        }
     }
 
     private void reconfigureProjectsDir() {
@@ -34,48 +64,41 @@ public class Fetcher {
         workdir = new WorkDir(dir);
     }
 
-    public void reconfigurePlatformsDir() throws IOException {
-        File platformsDir = config.getFile("platforms.dir");
-        if (platformsDir != null) {
-            platforms = new LocalAndroidPlatforms(platformsDir);
-        } else {
-            platforms = LocalAndroidPlatforms.findLocalJavaSdk();
-        }
+    public void setConfig(Config config) throws IOException {
+        this.config = config;
+        this.sdks = AndroidSdksLoader.load();
+
+        this.generateMavenBuild = config.getBoolean("generate.build.maven", true);
+        this.generateAntBuild = config.getBoolean("generate.build.ant", true);
+
+        reconfigurePlatformsDir();
+        reconfigureWorkDir();
+        reconfigureProjectsDir();
     }
 
-    public AndroidSdks getSdks() {
-        return sdks;
+    public void setGenerateAntBuild(boolean generateAntBuild) {
+        this.generateAntBuild = generateAntBuild;
+        
+        config.setBoolean("generate.build.ant", this.generateAntBuild);
     }
 
-    public void setSdks(AndroidSdks sdks) {
-        this.sdks = sdks;
-    }
-
-    public WorkDir getWorkdir() {
-        return workdir;
-    }
-
-    public void setWorkdir(WorkDir workdir) {
-        this.workdir = workdir;
-    }
-
-    public File getProjectsDir() {
-        return projectsDir;
-    }
-
-    public void setProjectsDir(File projectsDir) {
-        this.projectsDir = projectsDir;
-    }
-
-    public LocalAndroidPlatforms getPlatforms() {
-        return platforms;
+    public void setGenerateMavenBuild(boolean generateMavenBuild) {
+        this.generateMavenBuild = generateMavenBuild;
     }
 
     public void setPlatforms(LocalAndroidPlatforms platforms) {
         this.platforms = platforms;
     }
 
-    public Config getConfig() {
-        return config;
+    public void setProjectsDir(File projectsDir) {
+        this.projectsDir = projectsDir;
+    }
+
+    public void setSdks(AndroidSdks sdks) {
+        this.sdks = sdks;
+    }
+
+    public void setWorkdir(WorkDir workdir) {
+        this.workdir = workdir;
     }
 }
