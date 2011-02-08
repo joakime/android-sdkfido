@@ -1,6 +1,6 @@
 <android-source spec-version="1">
   <properties>
-    <base.repo>git://android.git.kernel.org/platform/frameworks/base.git</base.repo>
+    <property name="base.repo">git://android.git.kernel.org/platform/frameworks/base.git</property>
   </properties>
   <sdk id="android-sdk-1.5_r3" version="1.5" codename="cupcake"
     apilevel="3">
@@ -11,7 +11,7 @@
   <sdk id="android-sdk-1.6_r1" version="1.6" codename="donut"
     apilevel="4">
     <repo url="${base.repo}" branch="android-sdk-1.6_r1">
-      <niclude>code/java</niclude>
+      <niclude>core/java</niclude>
     </repo>
   </sdk>
   <sdk id="android-sdk-2.0.1_r1" version="2.0" codename="eclair"

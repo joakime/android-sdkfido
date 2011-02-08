@@ -3,8 +3,6 @@ package net.erdfelt.android.sdkfido.sdks;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.digester.annotations.rules.CallMethod;
-import org.apache.commons.digester.annotations.rules.CallParam;
 import org.apache.commons.digester.annotations.rules.ObjectCreate;
 import org.apache.commons.digester.annotations.rules.SetNext;
 import org.apache.commons.digester.annotations.rules.SetProperty;
