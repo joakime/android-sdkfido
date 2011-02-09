@@ -93,16 +93,20 @@ public class GitRepo {
         fetch.setRemote(Constants.DEFAULT_REMOTE_NAME);
         fetch.setThin(Transport.DEFAULT_FETCH_THIN);
         fetch.setProgressMonitor(getProgressMonitor());
-        
+
         FetchResult result = fetch.call();
         if (result.getTrackingRefUpdates().isEmpty()) {
             return;
         }
-        
+
         GitInfo.infoFetchResults(repo, result);
     }
 
     public void setMonitor(ProgressMonitor progressMonitor) {
         this.progressMonitor = progressMonitor;
+    }
+
+    public File getDir() {
+        return this.repoDirectory;
     }
 }

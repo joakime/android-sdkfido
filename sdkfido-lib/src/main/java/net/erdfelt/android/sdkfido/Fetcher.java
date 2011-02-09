@@ -3,6 +3,7 @@ package net.erdfelt.android.sdkfido;
 import java.io.File;
 import java.io.IOException;
 
+import net.erdfelt.android.sdkfido.local.AndroidPlatform;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
 import net.erdfelt.android.sdkfido.project.Project;
 import net.erdfelt.android.sdkfido.sdks.AndroidSdks;
@@ -27,21 +28,22 @@ public class Fetcher {
 
     public TaskQueue getFetchTasks(Sdk sdk) {
         TaskQueue tasks = new TaskQueue();
-        
+
         Project project = new Project(projectsDir, sdk.getId());
+        AndroidPlatform platform = platforms.getPlatform("android-" + sdk.getApilevel());
 
         for (SdkRepo repo : sdk.getRepos()) {
             tasks.add(new GitCloneTask(workdir, repo));
             tasks.add(new GitSwitchBranchTask(workdir, repo, repo.getBranch()));
             tasks.add(new InitProjectTask(project));
-            tasks.add(new CopyGitSourceToProjectTask(workdir, repo, project));
+            tasks.add(new CopyGitSourceToProjectTask(workdir, repo, platform, project));
         }
-        
-        if(generateAntBuild) {
+
+        if (generateAntBuild) {
             tasks.add(new GenerateAntBuildTask(project, sdk));
         }
-        
-        if(generateMavenBuild) {
+
+        if (generateMavenBuild) {
             tasks.add(new GenerateMavenBuildTask(project, sdk));
         }
 
