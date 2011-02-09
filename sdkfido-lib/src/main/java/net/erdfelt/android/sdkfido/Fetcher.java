@@ -4,8 +4,17 @@ import java.io.File;
 import java.io.IOException;
 
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
+import net.erdfelt.android.sdkfido.project.Project;
 import net.erdfelt.android.sdkfido.sdks.AndroidSdks;
 import net.erdfelt.android.sdkfido.sdks.AndroidSdksLoader;
+import net.erdfelt.android.sdkfido.sdks.Sdk;
+import net.erdfelt.android.sdkfido.sdks.SdkRepo;
+import net.erdfelt.android.sdkfido.tasks.CopyGitSourceToProjectTask;
+import net.erdfelt.android.sdkfido.tasks.GenerateAntBuildTask;
+import net.erdfelt.android.sdkfido.tasks.GenerateMavenBuildTask;
+import net.erdfelt.android.sdkfido.tasks.GitCloneTask;
+import net.erdfelt.android.sdkfido.tasks.GitSwitchBranchTask;
+import net.erdfelt.android.sdkfido.tasks.InitProjectTask;
 
 public class Fetcher {
     private AndroidSdks           sdks;
@@ -15,6 +24,29 @@ public class Fetcher {
     private Config                config;
     private boolean               generateMavenBuild = true;
     private boolean               generateAntBuild   = false;
+
+    public TaskQueue getFetchTasks(Sdk sdk) {
+        TaskQueue tasks = new TaskQueue();
+        
+        Project project = new Project(projectsDir, sdk.getId());
+
+        for (SdkRepo repo : sdk.getRepos()) {
+            tasks.add(new GitCloneTask(workdir, repo));
+            tasks.add(new GitSwitchBranchTask(workdir, repo, repo.getBranch()));
+            tasks.add(new InitProjectTask(project));
+            tasks.add(new CopyGitSourceToProjectTask(workdir, repo, project));
+        }
+        
+        if(generateAntBuild) {
+            tasks.add(new GenerateAntBuildTask(project, sdk));
+        }
+        
+        if(generateMavenBuild) {
+            tasks.add(new GenerateMavenBuildTask(project, sdk));
+        }
+
+        return tasks;
+    }
 
     public Config getConfig() {
         return config;
@@ -78,7 +110,7 @@ public class Fetcher {
 
     public void setGenerateAntBuild(boolean generateAntBuild) {
         this.generateAntBuild = generateAntBuild;
-        
+
         config.setBoolean("generate.build.ant", this.generateAntBuild);
     }
 

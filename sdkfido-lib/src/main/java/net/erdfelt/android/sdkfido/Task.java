@@ -3,9 +3,5 @@ package net.erdfelt.android.sdkfido;
 public interface Task {
     String getName();
 
-    String getStatusMessage();
-
-    int getProgressMax();
-
-    int getProgressCurrent();
+    void run(TaskListener tasklistener, TaskQueue tasks) throws Throwable;
 }
