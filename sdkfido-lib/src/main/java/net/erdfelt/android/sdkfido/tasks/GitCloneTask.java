@@ -30,9 +30,6 @@ public class GitCloneTask implements Task {
             return;
         }
 
-        git.createBareRepo();
-        String remoteName = "origin";
-        git.addRemoteConfig(remoteName, repo.getUrl());
-        git.fetch(remoteName);
+        git.clone(repo.getUrl());
     }
 }

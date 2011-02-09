@@ -16,8 +16,11 @@ import java.io.StringReader;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -30,10 +33,11 @@ import org.eclipse.jgit.transport.TrackingRefUpdate;
 import org.eclipse.jgit.transport.Transport;
 
 public class GitInfo {
-    private static final int ABBREV_LEN = 8;
+    private static final Logger LOG        = Logger.getLogger(GitInfo.class.getName());
+    private static final int    ABBREV_LEN = 8;
 
-    public static void infoAll(Git git) throws IOException {
-        infoAll(git.repo);
+    public static void infoAll(GitRepo git) throws IOException {
+        infoAll(git.getRepo());
     }
 
     public static void infoAll(Repository db) throws IOException {
@@ -147,7 +151,7 @@ public class GitInfo {
 
         for (TrackingRefUpdate update : result.getTrackingRefUpdates()) {
             if (update.getResult() == RefUpdate.Result.NO_CHANGE) {
-                // skip if not change
+                // skip if not changed
                 continue;
             }
 
@@ -234,6 +238,59 @@ public class GitInfo {
             return "[up to date]";
         default:
             return "[" + result.name() + "]";
+        }
+    }
+
+    public static String getObjectName(Repository repo, ObjectId objectId) {
+        try {
+            ObjectLoader loader = repo.open(objectId);
+            StringBuilder ret = new StringBuilder();
+
+            if (loader.isLarge()) {
+                ret.append("LARGE! ");
+            }
+
+            switch (loader.getType()) {
+            case Constants.OBJ_BAD:
+                ret.append("BAD ");
+                break;
+            case Constants.OBJ_BLOB:
+                ret.append("BLOB ");
+                break;
+            case Constants.OBJ_COMMIT:
+                ret.append("COMMIT ");
+                break;
+            case Constants.OBJ_EXT:
+                ret.append("EXT ");
+                break;
+            case Constants.OBJ_OFS_DELTA:
+                ret.append("OFS_DELTA ");
+                break;
+            case Constants.OBJ_REF_DELTA:
+                ret.append("REF_DELTA ");
+                break;
+            case Constants.OBJ_TAG:
+                ret.append("TAG ");
+                break;
+            case Constants.OBJ_TREE:
+                ret.append("TREE ");
+                break;
+            case Constants.OBJ_TYPE_5:
+                ret.append("TYPE_5 ");
+                break;
+            default:
+                ret.append("UNKNOWN[").append(loader.getType()).append("] ");
+                break;
+            }
+
+            ret.append(String.format("Size=%,d", loader.getSize()));
+            return ret.toString();
+        } catch (MissingObjectException e) {
+            LOG.log(Level.WARNING, "Unable to open objectId: " + objectId, e);
+            return "<missing object>";
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, "Unable to open objectId: " + objectId, e);
+            return "<unable to open object>";
         }
     }
 
