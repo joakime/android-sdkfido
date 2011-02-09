@@ -3,11 +3,15 @@ package net.erdfelt.android.sdkfido.git;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.jgit.api.CheckoutCommand;
+import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.InvalidRefNameException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
@@ -17,6 +21,9 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryState;
 import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.storage.file.FileRepository;
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.Transport;
 
 public class GitRepo {
     @SuppressWarnings("unused")
@@ -72,6 +79,27 @@ public class GitRepo {
 
     public RepositoryState getState() {
         return repo.getRepositoryState();
+    }
+
+    public void pullRemote(String remoteName) throws JGitInternalException, InvalidRemoteException, IOException {
+        Git git = new Git(repo);
+        FetchCommand fetch = git.fetch();
+        fetch.setCheckFetchedObjects(false);
+        fetch.setRemoveDeletedRefs(true);
+        List<RefSpec> specs = new ArrayList<RefSpec>();
+        fetch.setRefSpecs(specs);
+        fetch.setTimeout(-1);
+        fetch.setDryRun(false);
+        fetch.setRemote(Constants.DEFAULT_REMOTE_NAME);
+        fetch.setThin(Transport.DEFAULT_FETCH_THIN);
+        fetch.setProgressMonitor(getProgressMonitor());
+        
+        FetchResult result = fetch.call();
+        if (result.getTrackingRefUpdates().isEmpty()) {
+            return;
+        }
+        
+        GitInfo.infoFetchResults(repo, result);
     }
 
     public void setMonitor(ProgressMonitor progressMonitor) {

@@ -7,25 +7,23 @@ import net.erdfelt.android.sdkfido.WorkDir;
 import net.erdfelt.android.sdkfido.git.GitRepo;
 import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
-public class GitSwitchBranchTask implements Task {
+public class GitPullRemoteTask implements Task {
     private WorkDir workdir;
     private SdkRepo repo;
-    private String  branch;
 
-    public GitSwitchBranchTask(WorkDir workdir, SdkRepo repo, String branch) {
+    public GitPullRemoteTask(WorkDir workdir, SdkRepo repo) {
         this.workdir = workdir;
         this.repo = repo;
-        this.branch = branch;
     }
 
     @Override
     public String getName() {
-        return "Git Switch Branch: " + branch;
+        return "Git Pull Remote: " + repo.getUrl();
     }
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
         GitRepo git = workdir.getGitRepo(repo.getUrl());
-        git.checkoutBranch(branch);
+        git.pullRemote("origin");
     }
 }

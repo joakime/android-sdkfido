@@ -30,9 +30,9 @@ import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
 
+@SuppressWarnings("deprecation")
 public class GitCloneCommand {
-    private static final Logger LOG        = Logger.getLogger(GitCloneCommand.class.getName());
-    private String              remoteName = "origin";
+    private static final Logger LOG = Logger.getLogger(GitCloneCommand.class.getName());
     private String              remoteUrl;
     private ProgressMonitor     progressMonitor;
     private FileRepository      repo;
@@ -52,14 +52,6 @@ public class GitCloneCommand {
         this.progressMonitor = progressMonitor;
     }
 
-    public String getRemoteName() {
-        return remoteName;
-    }
-
-    public void setRemoteName(String remoteName) {
-        this.remoteName = remoteName;
-    }
-
     public String getRemoteUrl() {
         return remoteUrl;
     }
@@ -70,8 +62,8 @@ public class GitCloneCommand {
 
     public void call() throws URISyntaxException, IOException {
         createBareRepo();
-        addRemoteConfig(remoteName, remoteUrl);
-        FetchResult result = fetch(remoteName);
+        addRemoteConfig(Constants.DEFAULT_REMOTE_NAME, remoteUrl);
+        FetchResult result = fetch(Constants.DEFAULT_REMOTE_NAME);
 
         // What branch is at head?
         Ref branchAtHead = guessHEAD(result);
@@ -111,7 +103,6 @@ public class GitCloneCommand {
         return commit;
     }
 
-    @SuppressWarnings("deprecation")
     private void checkoutRef(Ref ref) throws IOException {
         LOG.info("checkoutRef: ref:" + ref);
 
@@ -126,27 +117,15 @@ public class GitCloneCommand {
         }
         ObjectId commitId = ref.getObjectId();
 
-        LOG.info("Creating commit mapping of " + commitId);
         RevCommit commit = parseCommit(commitId);
-        LOG.info("Commit: " + commit);
         RefUpdate u = repo.updateRef(Constants.HEAD);
-        LOG.info("Setting New Object ID: " + commit.getId());
         u.setNewObjectId(commit.getId());
-        LOG.info("Forcing Update");
-        Result updateResult = u.forceUpdate();
-        LOG.info("Update result " + updateResult);
+        u.forceUpdate();
 
-        LOG.info("Creating Index");
         GitIndex index = new GitIndex(repo);
-        LOG.info("Index: " + index);
-        LOG.info("Creating tree from commit");
         Tree tree = repo.mapTree(commit.getTree());
-        LOG.info("Tree: " + tree);
         WorkDirCheckout co = new WorkDirCheckout(repo, repo.getWorkTree(), index, tree);
-        LOG.info("Creating WorkDirCheckout: " + co);
-        LOG.info("Issuing checkout");
         co.checkout();
-        LOG.info("Writing Index");
         index.write();
     }
 
@@ -252,7 +231,7 @@ public class GitCloneCommand {
             tx.close();
         }
 
-        GitInfo.infoFetchResults(repo, tx, result);
+        GitInfo.infoFetchResults(repo, result);
         return result;
     }
 }

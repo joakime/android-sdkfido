@@ -146,7 +146,7 @@ public class GitInfo {
         }
     }
 
-    public static void infoFetchResults(Repository db, Transport tx, FetchResult result) throws IOException {
+    public static void infoFetchResults(Repository db, FetchResult result) throws IOException {
         boolean headerDisplayed = false;
 
         for (TrackingRefUpdate update : result.getTrackingRefUpdates()) {
@@ -161,7 +161,7 @@ public class GitInfo {
             String localRef = abbreviateRef(update.getLocalName());
 
             if (!headerDisplayed) {
-                System.out.printf("Fetch Results from URI: %s%n", tx.getURI());
+                System.out.printf("Fetch Results from URI: %s%n", result.getURI());
                 headerDisplayed = true;
             }
 

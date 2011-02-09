@@ -26,7 +26,7 @@ public class GitCloneTask implements Task {
         GitRepo git = workdir.getGitRepo(repo.getUrl());
 
         if (git.exists()) {
-            tasks.insertAtHead(new GitUpdateTask(workdir, repo));
+            tasks.insertAtHead(new GitPullRemoteTask(workdir, repo));
             return;
         }
 
