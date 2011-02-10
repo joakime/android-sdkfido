@@ -30,12 +30,14 @@ public class Main {
     private boolean generateAntBuild   = false;
     @Option(name = "--maven", usage = "Enable generation of Maven Build Script")
     private boolean generateMavenBuild = false;
-    @Argument(index = 0, metaVar = "Version", usage = "SDK to fetch")
+    @Argument(index = 0, metaVar = "<sdk version>", usage = "SDK to fetch")
     private String  sdkVersion;
     @Option(name = "--verbose")
     private boolean verbose            = false;
     @Option(name = "--debug")
     private boolean debug              = false;
+    @Option(name = "--dry-run", usage = "Show task list that would run")
+    private boolean dryRun             = false;
 
     public static void main(String[] args) {
         Logging.config();
@@ -48,7 +50,7 @@ public class Main {
             main.execute();
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
-            System.err.println("java -jar sdkfido-cli.jar [options...] arguments...");
+            System.err.println("java -jar sdkfido-cli.jar [options...] <sdk version>");
             parser.printUsage(System.err);
         } catch (Throwable t) {
             t.printStackTrace(System.err);
@@ -79,9 +81,17 @@ public class Main {
             TaskQueue tasks = fetcher.getFetchTasks(sdk);
             for (Task task : tasks) {
                 System.out.printf("Task: %s - %s%n", task.getClass().getSimpleName(), task.getName());
+                if (dryRun) {
+                    continue; // skip furthor processing
+                }
+                ConsoleTaskListener listener = new ConsoleTaskListener();
+                task.run(listener, tasks);
             }
         } catch (SDKNotFoundException e) {
             showSdkList(fetcher);
+        } catch (Throwable e) {
+            System.err.println("Task Execution Failure.");
+            e.printStackTrace(System.err);
         }
     }
 
