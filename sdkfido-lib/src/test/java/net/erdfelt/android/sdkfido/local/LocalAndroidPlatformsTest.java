@@ -23,8 +23,12 @@ public class LocalAndroidPlatformsTest {
     @Test
     public void testFindLocalJavaSdk() {
         try {
-            LocalAndroidPlatforms platforms = LocalAndroidPlatforms.findLocalJavaSdk();
-            System.out.println("LocalAndroidPlatforms = " + platforms);
+            File dir = LocalAndroidPlatforms.findLocalJavaSdk();
+            System.out.println("Local Android SDK Dir = " + dir);
+            if (dir != null) {
+                LocalAndroidPlatforms platforms = new LocalAndroidPlatforms(dir);
+                System.out.println("LocalAndroidPlatforms = " + platforms);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,6 +2,8 @@ package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
 
+import net.erdfelt.android.sdkfido.sdks.Sdk;
+
 import org.apache.commons.io.FilenameUtils;
 
 public class Project {
@@ -10,10 +12,11 @@ public class Project {
     private File   srcResources;
     private String id;
 
-    public Project(File projectsDir, String id) {
-        baseDir = new File(projectsDir, id);
-        srcJava = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/java"));
-        srcResources = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/resources"));
+    public Project(File projectsDir, Sdk sdk) {
+        this.id = sdk.getVersion();
+        this.baseDir = new File(projectsDir, "android-" + sdk.getVersion());
+        this.srcJava = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/java"));
+        this.srcResources = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/resources"));
     }
 
     public File getSrcJava() {

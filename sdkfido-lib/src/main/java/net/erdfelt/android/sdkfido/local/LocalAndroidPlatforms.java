@@ -31,11 +31,11 @@ public class LocalAndroidPlatforms {
     /**
      * Attempt to find the local java sdk using the most common environment variables.
      * 
-     * @return the local android java sdk
+     * @return the local android java sdk directory
      * @throws IOException
      *             if unable to load the default local java sdk
      */
-    public static LocalAndroidPlatforms findLocalJavaSdk() throws IOException {
+    public static File findLocalJavaSdk() throws IOException {
         StringBuilder err = new StringBuilder();
         err.append("Unable to find the Local Android Java SDK Folder.");
 
@@ -48,7 +48,7 @@ public class LocalAndroidPlatforms {
             }
             LocalAndroidPlatforms platforms = new LocalAndroidPlatforms(sdkHome);
             if (platforms.valid()) {
-                return platforms;
+                return sdkHome;
             }
         }
 
@@ -76,7 +76,7 @@ public class LocalAndroidPlatforms {
                     LOG.fine("Possible Home Dir: " + homeDir);
                     LocalAndroidPlatforms platforms = new LocalAndroidPlatforms(homeDir);
                     if (platforms.valid) {
-                        return platforms;
+                        return homeDir;
                     }
                 }
             }
@@ -261,5 +261,9 @@ public class LocalAndroidPlatforms {
             LOG.warning("Unable to parse \"" + raw + "\" as integer");
             return -1;
         }
+    }
+
+    public File getDir() {
+        return this.homeDir;
     }
 }

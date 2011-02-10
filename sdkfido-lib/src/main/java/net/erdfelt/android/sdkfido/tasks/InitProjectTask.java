@@ -14,7 +14,7 @@ public class InitProjectTask implements Task {
 
     @Override
     public String getName() {
-        return "Init Project: " + project.getId();
+        return "Init Project: " + project.getBaseDir();
     }
 
     @Override

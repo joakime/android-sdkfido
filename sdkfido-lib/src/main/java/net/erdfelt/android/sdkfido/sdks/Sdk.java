@@ -1,6 +1,9 @@
 package net.erdfelt.android.sdkfido.sdks;
 
+import java.text.CollationKey;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.digester.annotations.rules.ObjectCreate;
@@ -9,6 +12,16 @@ import org.apache.commons.digester.annotations.rules.SetProperty;
 
 @ObjectCreate(pattern = "android-source/sdk")
 public class Sdk {
+    public static class VersionComparator implements Comparator<Sdk> {
+        private Collator collator = Collator.getInstance();
+        @Override
+        public int compare(Sdk o1, Sdk o2) {
+            CollationKey key1 = collator.getCollationKey(o1.version);
+            CollationKey key2 = collator.getCollationKey(o2.version);
+            return key1.compareTo(key2);
+        }
+    }
+
     @SetProperty(pattern = "android-source/sdk", attributeName = "id")
     private String        id;
 

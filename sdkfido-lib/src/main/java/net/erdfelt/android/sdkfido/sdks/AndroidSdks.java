@@ -1,10 +1,16 @@
 package net.erdfelt.android.sdkfido.sdks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+
+import net.erdfelt.android.sdkfido.SDKNotFoundException;
 
 /**
  * This represents the available SDKs as prepared by the <code>sdks.xml</code> file present within the jar file.
@@ -39,13 +45,16 @@ public class AndroidSdks implements Iterable<Sdk> {
         return props;
     }
 
-    public Sdk getSdkByVersion(String version) {
+    public Sdk getSdkByVersion(String version) throws SDKNotFoundException {
+        if (StringUtils.isBlank(version)) {
+            throw new SDKNotFoundException("SDK Version not specified");
+        }
         for (Sdk sdk : sdkMap.values()) {
             if (version.equals(sdk.getVersion())) {
                 return sdk;
             }
         }
-        return null;
+        throw new SDKNotFoundException("SDK Version [" + version + "] not found");
     }
 
     public Map<String, Sdk> getSdkMap() {
@@ -62,7 +71,10 @@ public class AndroidSdks implements Iterable<Sdk> {
 
     @Override
     public Iterator<Sdk> iterator() {
-        return sdkMap.values().iterator();
+        List<Sdk> list = new ArrayList<Sdk>();
+        list.addAll(sdkMap.values());
+        Collections.sort(list, new Sdk.VersionComparator());
+        return list.iterator();
     }
 
     public void setProperty(String key, String value) {

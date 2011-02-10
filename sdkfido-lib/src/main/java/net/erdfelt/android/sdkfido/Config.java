@@ -5,12 +5,19 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.SystemUtils;
 
 public final class Config {
-    private static final Logger     LOG = Logger.getLogger(Config.class.getName());
+    private static final String     KEY_ANDROID_SDK_DIR      = "android.sdk.dir";
+    private static final String     KEY_GENERATE_ANT_BUILD   = "generate.ant.build";
+    private static final String     KEY_GENERATE_MAVEN_BUILD = "generate.maven.build";
+    private static final String     KEY_PROJECTS_DIR         = "projects.dir";
+    private static final String     KEY_WORK_DIR             = "work.dir";
+    private static final Logger     LOG                      = Logger.getLogger(Config.class.getName());
     private PropertiesConfiguration config;
     private File                    configHome;
 
@@ -32,7 +39,7 @@ public final class Config {
         loadConfig(configFile);
     }
 
-    public boolean getBoolean(String key, boolean defValue) {
+    private boolean getBoolean(String key, boolean defValue) {
         return config.getBoolean(key, defValue);
     }
 
@@ -44,22 +51,6 @@ public final class Config {
             }
         }
         return configHome;
-    }
-
-    public File getFile(String key) {
-        String value = config.getString(key);
-        if (value == null) {
-            return null;
-        }
-        return new File(value);
-    }
-
-    public File getFile(String key, File defaultFile) {
-        String value = config.getString(key);
-        if (value == null) {
-            return defaultFile;
-        }
-        return new File(value);
     }
 
     private final void loadConfig(File configFile) {
@@ -78,8 +69,82 @@ public final class Config {
         }
     }
 
-    public void setBoolean(String key, boolean value) {
+    private void setBoolean(String key, boolean value) {
         config.setProperty(key, Boolean.toString(value));
-        save();
+    }
+
+    private void setDir(String key, File dir) {
+        config.setProperty(key, dir.getAbsolutePath());
+    }
+
+    public void setPlatformsDir(File dir) {
+        setDir(KEY_ANDROID_SDK_DIR, dir);
+    }
+
+    public void setWorkDir(File dir) {
+        setDir(KEY_WORK_DIR, dir);
+    }
+
+    private File getDir(String key) {
+        String dirname = config.getString(key);
+        if (dirname == null) {
+            return null;
+        }
+        return new File(dirname);
+    }
+
+    public boolean getGenerateAntBuild() {
+        return getBoolean(KEY_GENERATE_ANT_BUILD, false);
+    }
+
+    public boolean getGenerateMavenBuild() {
+        return getBoolean(KEY_GENERATE_MAVEN_BUILD, true);
+    }
+
+    public void setGenerateAntBuild(boolean flag) {
+        setBoolean(KEY_GENERATE_ANT_BUILD, flag);
+    }
+
+    public void setGenerateMavenBuild(boolean flag) {
+        setBoolean(KEY_GENERATE_MAVEN_BUILD, flag);
+    }
+
+    public void setProjectsDir(File dir) {
+        setDir(KEY_PROJECTS_DIR, dir);
+    }
+
+    public File getProjectsDir() {
+        File dir = getDir(KEY_PROJECTS_DIR);
+
+        if (dir == null) {
+            dir = new File(this.configHome, "projects");
+            setProjectsDir(dir);
+        }
+
+        return dir;
+    }
+
+    public File getWorkDir() {
+        File dir = getDir(KEY_WORK_DIR);
+
+        if (dir == null) {
+            dir = new File(getConfigHome(), "work");
+            setWorkDir(dir);
+        }
+
+        return dir;
+    }
+
+    public File getPlatformsDir() throws IOException {
+        File dir = getDir(KEY_ANDROID_SDK_DIR);
+
+        if (dir == null) {
+            dir = LocalAndroidPlatforms.findLocalJavaSdk();
+            if (dir != null) {
+                setPlatformsDir(dir);
+            }
+        }
+
+        return dir;
     }
 }
