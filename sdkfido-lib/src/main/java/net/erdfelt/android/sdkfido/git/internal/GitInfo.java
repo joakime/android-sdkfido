@@ -8,14 +8,14 @@
  *   The Eclipse Public License is available at 
  *   http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package net.erdfelt.android.sdkfido.git;
+package net.erdfelt.android.sdkfido.git.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,13 +30,12 @@ import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.TrackingRefUpdate;
-import org.eclipse.jgit.transport.Transport;
 
 public class GitInfo {
     private static final Logger LOG        = Logger.getLogger(GitInfo.class.getName());
     private static final int    ABBREV_LEN = 8;
 
-    public static void infoAll(GitRepo git) throws IOException {
+    public static void infoAll(InternalGit git) throws IOException {
         infoAll(git.getRepo());
     }
 

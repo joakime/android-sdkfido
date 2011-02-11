@@ -4,7 +4,7 @@ import static org.hamcrest.Matchers.*;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.WorkDir;
-import net.erdfelt.android.sdkfido.git.GitRepo;
+import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.logging.Logging;
 import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
@@ -38,7 +38,7 @@ public class GitCloneTaskTest {
         gitclone.run(listener, tasks);
         gitbranch.run(listener, tasks);
 
-        GitRepo git = workdir.getGitRepo(repo.getUrl());
+        IGit git = workdir.getGitRepo(repo.getUrl());
         Assert.assertThat("Branch name", git.getCurrentBranch(), is("refs/tags/" + repo.getBranch()));
     }
 }

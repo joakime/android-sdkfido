@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.git;
+package net.erdfelt.android.sdkfido.git.internal;
 
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;

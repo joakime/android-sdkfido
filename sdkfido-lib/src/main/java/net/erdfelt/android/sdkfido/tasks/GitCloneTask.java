@@ -4,7 +4,7 @@ import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.WorkDir;
-import net.erdfelt.android.sdkfido.git.GitRepo;
+import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
 public class GitCloneTask implements Task {
@@ -23,7 +23,7 @@ public class GitCloneTask implements Task {
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
-        GitRepo git = workdir.getGitRepo(repo.getUrl());
+        IGit git = workdir.getGitRepo(repo.getUrl());
 
         if (git.exists()) {
             tasks.insertAtHead(new GitPullRemoteTask(workdir, repo));

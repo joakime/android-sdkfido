@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mirrors>
+  <mirror url="git://android.git.kernel.org/platform/frameworks/base.git"
+    mirrorurl="http://internal.repos.local/android/base.git" />
+  <mirror
+    url="git://android.git.kernel.org/platform/packages/apps/Launcher.git"
+    mirrorurl="http://internal.repos.local/android/Launcher.git" />
+  <mirror
+    url="git://android.git.kernel.org/platform/packages/apps/Phone.git"
+    mirrorurl="http://internal.repos.local/android/Phone.git" />
+</mirrors>

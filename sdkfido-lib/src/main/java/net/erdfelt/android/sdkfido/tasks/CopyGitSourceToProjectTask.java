@@ -9,7 +9,7 @@ import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.WorkDir;
-import net.erdfelt.android.sdkfido.git.GitRepo;
+import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.local.AndroidPlatform;
 import net.erdfelt.android.sdkfido.local.JarListing;
 import net.erdfelt.android.sdkfido.project.Project;
@@ -36,7 +36,7 @@ public class CopyGitSourceToProjectTask implements Task {
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
         JarListing listing = platform.getAndroidJarListing();
-        GitRepo git = workdir.getGitRepo(repo.getUrl());
+        IGit git = workdir.getGitRepo(repo.getUrl());
         for (String include : repo.getIncludes()) {
             File searchDir = new File(git.getDir(), toOS(include));
             File searchFile, destFile;

@@ -8,7 +8,7 @@
  *   The Eclipse Public License is available at 
  *   http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package net.erdfelt.android.sdkfido.git;
+package net.erdfelt.android.sdkfido.git.internal;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jgit.lib.ProgressMonitor;

@@ -1,9 +1,12 @@
-package net.erdfelt.android.sdkfido.git;
+package net.erdfelt.android.sdkfido.git.internal;
 
 import static org.hamcrest.Matchers.*;
 
 import java.io.File;
 
+import net.erdfelt.android.sdkfido.git.GitMirrors;
+import net.erdfelt.android.sdkfido.git.internal.InternalGit;
+import net.erdfelt.android.sdkfido.git.internal.TerseProgressMonitor;
 import net.erdfelt.android.sdkfido.logging.Logging;
 
 import org.eclipse.jetty.toolchain.test.FS;
@@ -12,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class GitRepoTest {
+public class InternalGitTest {
     @Rule
     public TestingDir testdir = new TestingDir();
 
@@ -27,7 +30,7 @@ public class GitRepoTest {
         File repodir = testdir.getFile("repo");
         FS.ensureDirExists(repodir);
 
-        GitRepo repo = new GitRepo(repodir);
+        InternalGit repo = new InternalGit(repodir, new GitMirrors());
         Assert.assertThat("repo.exist()", repo.exists(), is(false));
 
         String url = "http://joakim.erdfelt.com/git/clone-empty-jar.git";
@@ -44,7 +47,7 @@ public class GitRepoTest {
         File repodir = testdir.getFile("repo");
         FS.ensureDirExists(repodir);
 
-        GitRepo repo = new GitRepo(repodir);
+        InternalGit repo = new InternalGit(repodir, new GitMirrors());
         Assert.assertThat("repo.exist()", repo.exists(), is(false));
 
         String url = "http://joakim.erdfelt.com/git/large.git";

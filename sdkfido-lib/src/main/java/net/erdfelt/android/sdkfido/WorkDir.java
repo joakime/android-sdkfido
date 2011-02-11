@@ -1,9 +1,10 @@
 package net.erdfelt.android.sdkfido;
 
 import java.io.File;
-import java.io.IOException;
 
-import net.erdfelt.android.sdkfido.git.GitRepo;
+import net.erdfelt.android.sdkfido.git.GitException;
+import net.erdfelt.android.sdkfido.git.GitFactory;
+import net.erdfelt.android.sdkfido.git.IGit;
 
 public class WorkDir {
     private File baseDir;
@@ -12,10 +13,10 @@ public class WorkDir {
         this.baseDir = dir;
     }
 
-    public GitRepo getGitRepo(String url) throws IOException {
+    public IGit getGitRepo(String url) throws GitException {
         String safeFilename = toSafeFilename(url);
         File repoDir = new File(baseDir, safeFilename);
-        return new GitRepo(repoDir);
+        return GitFactory.getGit(repoDir);
     }
 
     /**

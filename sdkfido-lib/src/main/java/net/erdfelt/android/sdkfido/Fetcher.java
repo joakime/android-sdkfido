@@ -1,7 +1,10 @@
 package net.erdfelt.android.sdkfido;
 
+import java.io.File;
 import java.io.IOException;
 
+import net.erdfelt.android.sdkfido.git.GitFactory;
+import net.erdfelt.android.sdkfido.git.GitMirrors;
 import net.erdfelt.android.sdkfido.local.AndroidPlatform;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
 import net.erdfelt.android.sdkfido.project.Project;
@@ -27,6 +30,10 @@ public class Fetcher {
 
     public TaskQueue getFetchTasks(Sdk sdk) {
         TaskQueue tasks = new TaskQueue();
+        
+        File mirrorxml = new File(config.getConfigHome(), "gitmirrors.xml");
+        GitMirrors mirrors = GitMirrors.load(mirrorxml);
+        GitFactory.setMirrors(mirrors);
 
         Project project = new Project(config.getProjectsDir(), sdk);
         AndroidPlatform platform = platforms.getPlatform("android-" + sdk.getApilevel());

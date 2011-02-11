@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido.git;
+package net.erdfelt.android.sdkfido.git.internal;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+
+
+import net.erdfelt.android.sdkfido.git.IGit;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -38,6 +41,7 @@ public class GitCloneCommand {
 
     public GitCloneCommand(FileRepository repo) {
         this.repo = repo;
+        LOG.info("local repo: " + repo.getDirectory());
     }
 
     public ProgressMonitor getProgressMonitor() {
@@ -60,9 +64,10 @@ public class GitCloneCommand {
     }
 
     public void call() throws URISyntaxException, IOException {
+        LOG.info("clone: " + remoteUrl);
         createBareRepo();
-        addRemoteConfig(Constants.DEFAULT_REMOTE_NAME, remoteUrl);
-        FetchResult result = fetch(Constants.DEFAULT_REMOTE_NAME);
+        addRemoteConfig(IGit.REMOTE_NAME, remoteUrl);
+        FetchResult result = fetch(IGit.REMOTE_NAME);
 
         // What branch is at head?
         Ref branchAtHead = guessHEAD(result);
