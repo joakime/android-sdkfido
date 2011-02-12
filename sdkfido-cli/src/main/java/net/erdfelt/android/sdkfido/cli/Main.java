@@ -27,10 +27,6 @@ public class Main {
     private File    workDir;
     @Option(name = "--projectsdir", usage = "Location of Generated SDK Projects", metaVar = "DIR")
     private File    projectsDir;
-    @Option(name = "--ant", usage = "Enable generation of Ant Build Script")
-    private boolean generateAntBuild   = false;
-    @Option(name = "--maven", usage = "Enable generation of Maven Build Script")
-    private boolean generateMavenBuild = false;
     @Argument(index = 0, metaVar = "<sdk version>", usage = "SDK to fetch")
     private String  sdkVersion;
     @Option(name = "--verbose")
@@ -71,9 +67,6 @@ public class Main {
         if (projectsDir != null) {
             config.setProjectsDir(projectsDir);
         }
-
-        config.setGenerateAntBuild(generateAntBuild);
-        config.setGenerateMavenBuild(generateMavenBuild);
 
         fetcher.setConfig(config);
 

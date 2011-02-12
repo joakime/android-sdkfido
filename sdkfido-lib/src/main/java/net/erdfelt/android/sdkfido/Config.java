@@ -14,8 +14,6 @@ import org.apache.commons.lang.SystemUtils;
 public final class Config {
     public static final String      HOME_DIR_NAME            = ".sdkfido";
     private static final String     KEY_ANDROID_SDK_DIR      = "android.sdk.dir";
-    private static final String     KEY_GENERATE_ANT_BUILD   = "generate.ant.build";
-    private static final String     KEY_GENERATE_MAVEN_BUILD = "generate.maven.build";
     private static final String     KEY_PROJECTS_DIR         = "projects.dir";
     private static final String     KEY_WORK_DIR             = "work.dir";
     private static final Logger     LOG                      = Logger.getLogger(Config.class.getName());
@@ -92,22 +90,6 @@ public final class Config {
             return null;
         }
         return new File(dirname);
-    }
-
-    public boolean getGenerateAntBuild() {
-        return getBoolean(KEY_GENERATE_ANT_BUILD, false);
-    }
-
-    public boolean getGenerateMavenBuild() {
-        return getBoolean(KEY_GENERATE_MAVEN_BUILD, true);
-    }
-
-    public void setGenerateAntBuild(boolean flag) {
-        setBoolean(KEY_GENERATE_ANT_BUILD, flag);
-    }
-
-    public void setGenerateMavenBuild(boolean flag) {
-        setBoolean(KEY_GENERATE_MAVEN_BUILD, flag);
     }
 
     public void setProjectsDir(File dir) {

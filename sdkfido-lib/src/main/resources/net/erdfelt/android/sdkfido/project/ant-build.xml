@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="android-source" default="build">
+  <target name="build">
+    <antversion property="antversion" atleast="1.8"/>
+    <antcall target="build-source-jar"/>
+    <antcall target="build-javadoc-jar"/>
+  </target>
+
+  <target name="build-source-jar">
+    <echo>-----------------------------------------------------</echo>
+    <echo> Building source jar</echo>
+    <echo></echo>
+
+    <jar basedir="${basedir}/src/main/java"
+         destfile="${basedir}/target/android-source.jar"
+         includes="**/*.java" />
+  </target>
+
+  <target name="build-javadoc-jar">
+    <echo>-----------------------------------------------------</echo>
+    <echo> Building javadoc jar</echo>
+    <echo></echo>
+
+  	
+  </target>
+</project>

@@ -17,8 +17,7 @@ import net.erdfelt.android.sdkfido.sdks.Sdk;
 import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 import net.erdfelt.android.sdkfido.tasks.CloseProjectTask;
 import net.erdfelt.android.sdkfido.tasks.CopyGitSourceToProjectTask;
-import net.erdfelt.android.sdkfido.tasks.GenerateAntBuildTask;
-import net.erdfelt.android.sdkfido.tasks.GenerateMavenBuildTask;
+import net.erdfelt.android.sdkfido.tasks.GenerateBuildFilesTask;
 import net.erdfelt.android.sdkfido.tasks.GitCloneTask;
 import net.erdfelt.android.sdkfido.tasks.GitSwitchBranchTask;
 import net.erdfelt.android.sdkfido.tasks.InitProjectTask;
@@ -55,17 +54,10 @@ public class Fetcher {
             tasks.add(new GitSwitchBranchTask(git, repo.getBranch()));
             tasks.add(new CopyGitSourceToProjectTask(git, repo, copier));
         }
-        tasks.add(new CloseProjectTask(copier));
         tasks.add(new ProcessAidlFilesTask(platforms, project));
         tasks.add(new ValidateJavaPackagesTask(project));
-
-        if (config.getGenerateAntBuild()) {
-            tasks.add(new GenerateAntBuildTask(project, sdk));
-        }
-
-        if (config.getGenerateMavenBuild()) {
-            tasks.add(new GenerateMavenBuildTask(project, sdk));
-        }
+        tasks.add(new GenerateBuildFilesTask(project, sdk));
+        tasks.add(new CloseProjectTask(copier));
 
         return tasks;
     }

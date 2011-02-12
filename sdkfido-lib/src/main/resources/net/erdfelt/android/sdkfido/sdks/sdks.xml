@@ -229,8 +229,10 @@
       <include>libcore/math/src/main/java</include>
       <include>libcore/xml/src/main/java</include>
       <include>libcore/awt-kernel/src/main/java</include>
+      <!-- 
       <include>libcore-disabled/sound/src/main/java</include>
       <include>libcore-disabled/instrument/src/main/java</include>
+        -->
     </repo>
     <repo url="${external.apache-http.repo}" branch="android-sdk-2.2_r2">
       <include>src</include>
