@@ -10,6 +10,8 @@ import java.util.ListIterator;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import net.erdfelt.android.sdkfido.util.PathUtil;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -78,7 +80,7 @@ public class SourceCopier {
             if (path.isDirectory()) {
                 recurseDirCopy(basedir, path);
             } else if (path.isFile()) {
-                relpath = toRelativePath(basedir, path);
+                relpath = PathUtil.toRelativePath(basedir, path);
                 name = path.getName();
                 countCopied++;
                 if (name.endsWith(".java")) {
@@ -94,13 +96,6 @@ public class SourceCopier {
                 }
             }
         }
-    }
-
-    public static String toRelativePath(File basedir, File destpath) {
-        URI baseuri = basedir.toURI();
-        URI otheruri = destpath.toURI();
-        URI reluri = baseuri.relativize(otheruri);
-        return FilenameUtils.separatorsToSystem(reluri.toASCIIString());
     }
 
     @Override

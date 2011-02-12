@@ -165,9 +165,9 @@ public class LocalAndroidPlatforms {
         return homeDir.exists();
     }
 
-    public AndroidPlatform getPlatform(String id) throws AndroidPlatformNotFoundException{
+    public AndroidPlatform getPlatform(String id) throws AndroidPlatformNotFoundException {
         AndroidPlatform platform = platforms.get(id);
-        if(platform == null) {
+        if (platform == null) {
             throw new AndroidPlatformNotFoundException(id);
         }
         return platform;
@@ -269,5 +269,26 @@ public class LocalAndroidPlatforms {
 
     public File getDir() {
         return this.homeDir;
+    }
+
+    public File getBin(String binname) throws FileNotFoundException {
+        String paths[] = { "tools", "platform-tools" };
+
+        String binosname = binname;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            binosname += ".exe";
+        }
+
+        for (String searchPath : paths) {
+            File bindir = new File(this.homeDir, searchPath);
+            if (!bindir.exists()) {
+                continue; // skip, dir does not exist.
+            }
+            File bin = new File(bindir, binosname);
+            if (bin.exists() && bin.isFile() && bin.canExecute()) {
+                return bin;
+            }
+        }
+        throw new FileNotFoundException("android binary: " + binname);
     }
 }

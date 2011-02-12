@@ -47,7 +47,7 @@
       <include>im/java</include>
       <include>location/java</include>
       <include>services/java</include>
-      <include>awt/java</include>
+      <include>awt</include>
       <include>wifi/java</include>
       <include>telephony/java</include>
       <include>test-runner/src</include>
@@ -97,7 +97,7 @@
       <include>im/java</include>
       <include>location/java</include>
       <include>services/java</include>
-      <include>awt/java</include>
+      <include>awt</include>
       <include>wifi/java</include>
       <include>telephony/java</include>
       <include>test-runner/src</include>
@@ -147,7 +147,7 @@
       <include>im/java</include>
       <include>location/java</include>
       <include>services/java</include>
-      <include>awt/java</include>
+      <include>awt</include>
       <include>wifi/java</include>
       <include>telephony/java</include>
       <include>test-runner/src</include>
@@ -197,7 +197,7 @@
       <include>im/java</include>
       <include>location/java</include>
       <include>services/java</include>
-      <include>awt/java</include>
+      <include>awt</include>
       <include>wifi/java</include>
       <include>telephony/java</include>
       <include>test-runner/src</include>

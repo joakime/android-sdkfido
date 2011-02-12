@@ -2,10 +2,13 @@ package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.sdks.Sdk;
+import net.erdfelt.android.sdkfido.util.PathUtil;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -62,9 +65,13 @@ public class Project {
     public String getId() {
         return id;
     }
+    
+    public File getSubPath(String path) {
+        return new File(baseDir, FilenameUtils.separatorsToSystem(path));
+    }
 
     public void delete(String path) {
-        File file = new File(baseDir, FilenameUtils.separatorsToSystem(path));
+        File file = getSubPath(path);
         if (file.exists()) {
             file.delete();
         }
@@ -85,12 +92,30 @@ public class Project {
     public void cleanSourceTree() {
         cleanTree(getSrcJava());
         cleanTree(getSrcResources());
+        cleanTree(getSubPath("target/classes"));
     }
 
     public void copyStub(File androidJarFile) throws IOException {
-        File libdir = new File(getBaseDir(), "lib");
-        libdir.mkdirs();
-        File destfile = new File(libdir, "android-stub.jar");
+        File destfile = getSubPath("lib/android-stub.jar");
+        FileUtils.forceMkdir(destfile.getParentFile());
         FileUtils.copyFile(androidJarFile, destfile);
+    }
+
+    public List<String> getResourcesPathsOfType(String ext) {
+        List<String> paths = new ArrayList<String>();
+        recursePathTypes(paths, getSrcResources(), getSrcResources(), ext);
+        return paths;
+    }
+
+    private void recursePathTypes(List<String> paths, File basedir, File dir, String ext) {
+        for (File path : dir.listFiles()) {
+            if (path.isDirectory()) {
+                recursePathTypes(paths, basedir, path, ext);
+            } else if (path.isFile()) {
+                if (path.getName().endsWith(ext)) {
+                    paths.add(PathUtil.toRelativePath(basedir, path));
+                }
+            }
+        }
     }
 }
