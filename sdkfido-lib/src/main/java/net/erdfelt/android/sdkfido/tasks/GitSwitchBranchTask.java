@@ -3,19 +3,20 @@ package net.erdfelt.android.sdkfido.tasks;
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
-import net.erdfelt.android.sdkfido.WorkDir;
 import net.erdfelt.android.sdkfido.git.IGit;
-import net.erdfelt.android.sdkfido.sdks.SdkRepo;
+
+import org.apache.commons.lang.StringUtils;
 
 public class GitSwitchBranchTask implements Task {
-    private WorkDir workdir;
-    private SdkRepo repo;
-    private String  branch;
+    private IGit   git;
+    private String branch;
 
-    public GitSwitchBranchTask(WorkDir workdir, SdkRepo repo, String branch) {
-        this.workdir = workdir;
-        this.repo = repo;
+    public GitSwitchBranchTask(IGit git, String branch) {
+        this.git = git;
         this.branch = branch;
+        if (StringUtils.isBlank(branch)) {
+            throw new IllegalArgumentException("Branch Name cannot be blank");
+        }
     }
 
     @Override
@@ -25,7 +26,6 @@ public class GitSwitchBranchTask implements Task {
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
-        IGit git = workdir.getGitRepo(repo.getUrl());
         git.checkoutBranch(branch);
     }
 }

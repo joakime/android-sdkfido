@@ -12,6 +12,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.SystemUtils;
 
 public final class Config {
+    public static final String      HOME_DIR_NAME            = ".sdkfido";
     private static final String     KEY_ANDROID_SDK_DIR      = "android.sdk.dir";
     private static final String     KEY_GENERATE_ANT_BUILD   = "generate.ant.build";
     private static final String     KEY_GENERATE_MAVEN_BUILD = "generate.maven.build";
@@ -45,7 +46,7 @@ public final class Config {
 
     public File getConfigHome() {
         if (configHome == null) {
-            configHome = new File(SystemUtils.getUserHome(), ".sdkfido");
+            configHome = new File(SystemUtils.getUserHome(), HOME_DIR_NAME);
             if (!configHome.exists()) {
                 configHome.mkdirs();
             }

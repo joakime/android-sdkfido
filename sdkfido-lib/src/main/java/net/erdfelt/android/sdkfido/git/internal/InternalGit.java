@@ -108,7 +108,7 @@ public class InternalGit implements IGit {
             fetch.setRemoveDeletedRefs(true);
             List<RefSpec> specs = new ArrayList<RefSpec>();
             fetch.setRefSpecs(specs);
-            fetch.setTimeout(-1);
+            fetch.setTimeout(5000);
             fetch.setDryRun(false);
             fetch.setRemote(IGit.REMOTE_NAME);
             fetch.setThin(Transport.DEFAULT_FETCH_THIN);
@@ -131,6 +131,6 @@ public class InternalGit implements IGit {
 
     @Override
     public File getDir() {
-        return this.repoDirectory;
+        return this.repo.getWorkTree();
     }
 }

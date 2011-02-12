@@ -1,31 +1,49 @@
 package net.erdfelt.android.sdkfido.tasks;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
+import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
-import net.erdfelt.android.sdkfido.WorkDir;
 import net.erdfelt.android.sdkfido.git.IGit;
-import net.erdfelt.android.sdkfido.local.AndroidPlatform;
-import net.erdfelt.android.sdkfido.local.JarListing;
-import net.erdfelt.android.sdkfido.project.Project;
+import net.erdfelt.android.sdkfido.project.SourceCopier;
 import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
 public class CopyGitSourceToProjectTask implements Task {
-    private WorkDir         workdir;
-    private SdkRepo         repo;
-    private AndroidPlatform platform;
-    private Project         project;
+    private static final Logger LOG = Logger.getLogger(CopyGitSourceToProjectTask.class.getName());
+    private IGit                git;
+    private SdkRepo             repo;
+    private SourceCopier        copier;
 
-    public CopyGitSourceToProjectTask(WorkDir workdir, SdkRepo repo, AndroidPlatform platform, Project project) {
-        this.workdir = workdir;
+    public CopyGitSourceToProjectTask(IGit git, SdkRepo repo, SourceCopier copier) {
+        super();
+        this.git = git;
         this.repo = repo;
-        this.platform = platform;
-        this.project = project;
+        this.copier = copier;
+    }
+
+    public IGit getGit() {
+        return git;
+    }
+
+    public void setGit(IGit git) {
+        this.git = git;
+    }
+
+    public SourceCopier getCopier() {
+        return copier;
+    }
+
+    public void setCopier(SourceCopier copier) {
+        this.copier = copier;
+    }
+
+    public SdkRepo getRepo() {
+        return repo;
+    }
+
+    public void setRepo(SdkRepo repo) {
+        this.repo = repo;
     }
 
     @Override
@@ -35,22 +53,9 @@ public class CopyGitSourceToProjectTask implements Task {
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
-        JarListing listing = platform.getAndroidJarListing();
-        IGit git = workdir.getGitRepo(repo.getUrl());
         for (String include : repo.getIncludes()) {
-            File searchDir = new File(git.getDir(), toOS(include));
-            File searchFile, destFile;
-            for (String classentry : listing.getClassList()) {
-                searchFile = new File(searchDir, toOS(classentry));
-                if (searchFile.exists()) {
-                    destFile = project.getSrcJava(classentry);
-                    FileUtils.copyFile(searchFile, destFile);
-                }
-            }
+            copier.searchTree(git.getDir(), include);
         }
-    }
-
-    private String toOS(String path) {
-        return FilenameUtils.separatorsToSystem(path);
+        LOG.info("Copier Results: " + copier);
     }
 }

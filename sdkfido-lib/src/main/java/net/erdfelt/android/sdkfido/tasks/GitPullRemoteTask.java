@@ -3,27 +3,22 @@ package net.erdfelt.android.sdkfido.tasks;
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
-import net.erdfelt.android.sdkfido.WorkDir;
 import net.erdfelt.android.sdkfido.git.IGit;
-import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
 public class GitPullRemoteTask implements Task {
-    private WorkDir workdir;
-    private SdkRepo repo;
+    private IGit git;
 
-    public GitPullRemoteTask(WorkDir workdir, SdkRepo repo) {
-        this.workdir = workdir;
-        this.repo = repo;
+    public GitPullRemoteTask(IGit git) {
+        this.git = git;
     }
 
     @Override
     public String getName() {
-        return "Git Pull Remote: " + repo.getUrl();
+        return "Git Pull Remote: " + IGit.REMOTE_NAME;
     }
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
-        IGit git = workdir.getGitRepo(repo.getUrl());
         git.pullRemote();
     }
 }

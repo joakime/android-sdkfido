@@ -5,13 +5,14 @@ import java.io.IOException;
 
 import net.erdfelt.android.sdkfido.Config;
 import net.erdfelt.android.sdkfido.Fetcher;
-import net.erdfelt.android.sdkfido.SDKNotFoundException;
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.local.AndroidPlatform;
+import net.erdfelt.android.sdkfido.local.AndroidPlatformNotFoundException;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
 import net.erdfelt.android.sdkfido.logging.Logging;
 import net.erdfelt.android.sdkfido.sdks.AndroidSdks;
+import net.erdfelt.android.sdkfido.sdks.SDKNotFoundException;
 import net.erdfelt.android.sdkfido.sdks.Sdk;
 
 import org.kohsuke.args4j.Argument;
@@ -78,8 +79,10 @@ public class Main {
 
         try {
             Sdk sdk = fetcher.getSdks().getSdkByVersion(sdkVersion);
-            TaskQueue tasks = fetcher.getFetchTasks(sdk);
-            for (Task task : tasks) {
+            AndroidPlatform platform = fetcher.getPlatforms().getPlatform("android-" + sdk.getApilevel());
+            TaskQueue tasks = fetcher.getFetchTasks(sdk, platform);
+            while(tasks.hasTask()) {
+                Task task = tasks.remove();
                 System.out.printf("Task: %s - %s%n", task.getClass().getSimpleName(), task.getName());
                 if (dryRun) {
                     continue; // skip furthor processing
@@ -87,7 +90,11 @@ public class Main {
                 ConsoleTaskListener listener = new ConsoleTaskListener();
                 task.run(listener, tasks);
             }
+        } catch (AndroidPlatformNotFoundException e) {
+            System.err.println("Android Platform [" + e.getMessage() + "] is unavailable. choose another one.");
+            showSdkList(fetcher);
         } catch (SDKNotFoundException e) {
+            System.err.println("SDK version [" + e.getMessage() + "] is unavailable. choose another one.");
             showSdkList(fetcher);
         } catch (Throwable e) {
             System.err.println("Task Execution Failure.");
@@ -102,14 +109,12 @@ public class Main {
 
         System.out.printf("Version | API | Status%n");
         for (Sdk sdk : sdks) {
-            AndroidPlatform platform = platforms.getPlatform("android-" + sdk.getApilevel());
-            String status = "Unknown";
-            if (platform == null) {
-                status = "Unavailable (go install it in your Android SDK Tools)";
-            } else {
-                status = "Available (" + platform.getDescription() + ")";
+            try {
+                AndroidPlatform platform = platforms.getPlatform("android-" + sdk.getApilevel());
+                System.out.printf("%-7s | %3d | %s%n", sdk.getVersion(), sdk.getApilevel(), "Available (" + platform.getDescription() + ")");
+            } catch (AndroidPlatformNotFoundException e) {
+                System.out.printf("%-7s | %3d | %s%n", sdk.getVersion(), sdk.getApilevel(), "Unavailable (go install it in your Android SDK Tools)");
             }
-            System.out.printf("%-7s | %3d | %s%n", sdk.getVersion(), sdk.getApilevel(), status);
         }
     }
 }

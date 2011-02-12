@@ -1,4 +1,4 @@
-package net.erdfelt.android.sdkfido;
+package net.erdfelt.android.sdkfido.sdks;
 
 import java.io.IOException;
 

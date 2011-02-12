@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import net.erdfelt.android.sdkfido.SDKNotFoundException;
 
 /**
  * This represents the available SDKs as prepared by the <code>sdks.xml</code> file present within the jar file.

@@ -165,8 +165,12 @@ public class LocalAndroidPlatforms {
         return homeDir.exists();
     }
 
-    public AndroidPlatform getPlatform(String id) {
-        return platforms.get(id);
+    public AndroidPlatform getPlatform(String id) throws AndroidPlatformNotFoundException{
+        AndroidPlatform platform = platforms.get(id);
+        if(platform == null) {
+            throw new AndroidPlatformNotFoundException(id);
+        }
+        return platform;
     }
 
     public Collection<AndroidPlatform> getPlatforms() {

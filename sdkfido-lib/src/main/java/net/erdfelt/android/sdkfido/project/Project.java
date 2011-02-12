@@ -1,16 +1,22 @@
 package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.sdks.Sdk;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 public class Project {
-    private File   baseDir;
-    private File   srcJava;
-    private File   srcResources;
-    private String id;
+    public static final String  COPIED_SOURCE_LOG = "copied-source.log";
+    private static final Logger LOG               = Logger.getLogger(Project.class.getName());
+    private File                baseDir;
+    private File                srcJava;
+    private File                srcResources;
+    private String              id;
 
     public Project(File projectsDir, Sdk sdk) {
         this.id = sdk.getVersion();
@@ -55,5 +61,29 @@ public class Project {
 
     public String getId() {
         return id;
+    }
+
+    public void delete(String path) {
+        File file = new File(baseDir, FilenameUtils.separatorsToSystem(path));
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    private void cleanTree(File dir) {
+        if (dir.exists()) {
+            try {
+                FileUtils.cleanDirectory(dir);
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, "Unable to clean directory: " + dir, e);
+            }
+        } else {
+            dir.mkdirs();
+        }
+    }
+
+    public void cleanSourceTree() {
+        cleanTree(getSrcJava());
+        cleanTree(getSrcResources());
     }
 }

@@ -62,7 +62,7 @@ public class AndroidSdksTest {
         prefix = prefix + ".includes";
         List<String> includes = repo.getIncludes();
         Assert.assertThat(prefix, includes, notNullValue());
-        Assert.assertThat(prefix + ".size", includes.size(), is(1));
+        Assert.assertThat(prefix + ".size", includes.size(), is(12));
         Assert.assertThat(prefix + "[0]", includes.get(0), is("core/java"));
     }
 }

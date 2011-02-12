@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -87,5 +89,26 @@ public class JarListing extends ArrayList<String> {
      */
     public List<String> getClassList() {
         return classlist;
+    }
+
+    /**
+     * Convert all of the classlist entries to *.java source file listings instead.
+     * 
+     * @return the list of java source files.
+     */
+    public Set<String> getJavaSourceListing() {
+        Set<String> javasrcs = new TreeSet<String>();
+        
+        String javasrc;
+        for(String classname: classlist) {
+            if(classname.contains("$")) {
+                continue; // skip (inner classes don't have a direct 1::1 java source file
+            }
+            
+            javasrc = classname.replaceFirst("\\.class$", ".java");
+            javasrcs.add(javasrc);
+        }
+        
+        return javasrcs;
     }
 }
