@@ -90,6 +90,7 @@ public class Project {
     public void copyStub(File androidJarFile) throws IOException {
         File libdir = new File(getBaseDir(), "lib");
         libdir.mkdirs();
-        FileUtils.copyFileToDirectory(androidJarFile, libdir);
+        File destfile = new File(libdir, "android-stub.jar");
+        FileUtils.copyFile(androidJarFile, destfile);
     }
 }
