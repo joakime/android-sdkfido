@@ -20,7 +20,7 @@ public class SourceCopier {
     private FileWriter          logwriter;
     private PrintWriter         out;
     private int                 found;
-    private int                 misses;
+    private int                 extras;
 
     public SourceCopier(Set<String> javalisting) {
         this.javalisting.addAll(javalisting);
@@ -37,43 +37,36 @@ public class SourceCopier {
 
         // Remove entries that already exist.
         out.println("Removing previously found java source files (already present in tree)");
-        ListIterator<String> iterlisting = javalisting.listIterator();
+        updateSearchListings();
+    }
+
+    private void updateSearchListings() {
         File searchFile;
         String javafilename;
+        ListIterator<String> iterlisting = javalisting.listIterator();
         while (iterlisting.hasNext()) {
             javafilename = iterlisting.next();
             searchFile = project.getSrcJava(javafilename);
             if (searchFile.exists()) {
                 iterlisting.remove();
+                found++;
                 out.println("[FOUND] " + javafilename);
             }
         }
     }
 
-    public void searchTree(File gitDir, String include) throws IOException {
+    public void copyTree(File gitDir, String include) throws IOException {
         File searchDir = new File(gitDir, toOS(include));
-        log("Searching: " + searchDir);
-
-        File searchFile, destFile;
-        ListIterator<String> iterlisting = javalisting.listIterator();
-        while (iterlisting.hasNext()) {
-            String javafilename = iterlisting.next();
-            searchFile = new File(searchDir, toOS(javafilename));
-            if (searchFile.exists()) {
-                destFile = project.getSrcJava(javafilename);
-                FileUtils.copyFile(searchFile, destFile);
-                iterlisting.remove(); // Don't search for this one again.
-                out.println("[FOUND] " + javafilename);
-                found++;
-            } else {
-                misses++;
-            }
+        if(searchDir.exists()) {
+            log("Copying Tree: " + searchDir);
+            FileUtils.copyDirectory(searchDir, project.getSrcJava());
+            updateSearchListings();
         }
     }
 
     @Override
     public String toString() {
-        return "Copied " + found + " files, missed " + misses + " files (only " + javalisting.size()
+        return "Copied " + found + " files (+" + extras + " extra files) (only " + javalisting.size()
                 + " left to find!)";
     }
 

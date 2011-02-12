@@ -181,9 +181,7 @@ public class GitCloneCommand {
         RemoteConfig rc = new RemoteConfig(repo.getConfig(), remoteName);
         rc.addURI(uri);
 
-        // String dest = "+" + Constants.R_HEADS + "*:" + Constants.R_REMOTES + remoteName + "/*";
         String dest = Constants.R_HEADS + "*:" + Constants.R_REMOTES + remoteName + "/*";
-        LOG.info("Dest RefSpec: " + dest);
 
         RefSpec refspec = new RefSpec(dest);
         refspec.setForceUpdate(true);

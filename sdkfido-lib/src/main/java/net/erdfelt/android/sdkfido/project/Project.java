@@ -86,4 +86,10 @@ public class Project {
         cleanTree(getSrcJava());
         cleanTree(getSrcResources());
     }
+
+    public void copyStub(File androidJarFile) throws IOException {
+        File libdir = new File(getBaseDir(), "lib");
+        libdir.mkdirs();
+        FileUtils.copyFileToDirectory(androidJarFile, libdir);
+    }
 }

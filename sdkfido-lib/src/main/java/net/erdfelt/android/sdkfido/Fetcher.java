@@ -45,7 +45,7 @@ public class Fetcher {
         SourceCopier copier = new SourceCopier(jarlisting.getJavaSourceListing());
         copier.setProject(project);
         
-        tasks.add(new InitProjectTask(project, copier));
+        tasks.add(new InitProjectTask(platform, project, copier));
         for (SdkRepo repo : sdk.getRepos()) {
             IGit git = workdir.getGitRepo(repo.getUrl());
 

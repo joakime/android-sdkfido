@@ -54,7 +54,7 @@ public class CopyGitSourceToProjectTask implements Task {
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
         for (String include : repo.getIncludes()) {
-            copier.searchTree(git.getDir(), include);
+            copier.copyTree(git.getDir(), include);
         }
         LOG.info("Copier Results: " + copier);
     }

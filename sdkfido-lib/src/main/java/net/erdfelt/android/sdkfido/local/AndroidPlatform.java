@@ -56,5 +56,4 @@ public class AndroidPlatform {
     public JarListing getAndroidJarListing() throws IOException {
         return new JarListing(androidJarFile);
     }
-
 }
