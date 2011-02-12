@@ -51,7 +51,7 @@ public class AndroidSdksTest {
         prefix = prefix + ".repos";
         List<SdkRepo> repos = ver20.getRepos();
         Assert.assertThat(prefix, repos, notNullValue());
-        Assert.assertThat(prefix + ".size", repos.size(), is(1));
+        Assert.assertThat(prefix + ".size", repos.size(), is(3));
 
         prefix = prefix + "[0]";
         SdkRepo repo = repos.get(0);
