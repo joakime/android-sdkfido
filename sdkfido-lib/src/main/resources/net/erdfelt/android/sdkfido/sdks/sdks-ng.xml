@@ -11,18 +11,28 @@
     <api level="2" version="1.1" />
     <api level="1" version="1.0" />
   </apilevels>
-
+  
+  <tags>
+    <tag name="android-sdk-1.5-pre" version="1.5" />
+    <tag name="android-sdk-1.5_r1" version="1.5" />
+    <tag name="android-sdk-1.5_r3" version="1.5" />
+    <tag name="android-sdk-1.6_r1" version="1.6" />
+    <tag name="android-sdk-1.6_r2" version="1.6" />
+    <tag name="android-sdk-2.0.1_r1" version="2.0.1" />
+    <tag name="android-sdk-2.0_r1" version="2.0" />
+    <tag name="android-sdk-2.1_r1" version="2.1" />
+    <tag name="android-sdk-2.2_r1" version="2.2" />
+    <tag name="android-sdk-2.2_r2" version="2.2" />
+  </tags>
+  
   <branches>
-    <branch name="android-sdk-1.5-pre" version="1.5" />
-    <branch name="android-sdk-1.5_r1" version="1.5" />
-    <branch name="android-sdk-1.5_r3" version="1.5" />
-    <branch name="android-sdk-1.6_r1" version="1.6" />
-    <branch name="android-sdk-1.6_r2" version="1.6" />
-    <branch name="android-sdk-2.0.1_r1" version="2.0.1" />
-    <branch name="android-sdk-2.0_r1" version="2.0" />
-    <branch name="android-sdk-2.1_r1" version="2.1" />
-    <branch name="android-sdk-2.2_r1" version="2.2" />
-    <branch name="android-sdk-2.2_r2" version="2.2" />
+    <branch name="gingerbread-release" version="2.3" />
+    <branch name="froyo-release" version="2.2" />
+    <branch name="eclair-release" version="2.0" />
+    <branch name="donut-release2" version="1.6" />
+    <branch name="donut-release" version="1.6" />
+    <branch name="cupcake-release" version="1.5" />
+    <branch name="release-1.0" version="1.0" />
   </branches>
   
   <repos>
