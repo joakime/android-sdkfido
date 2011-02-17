@@ -31,7 +31,7 @@ public class Fetcher {
     private AndroidSdks           sdks;
     private WorkDir               workdir;
     private LocalAndroidPlatforms platforms;
-    private Config                config;
+    private FetcherConfig         config;
 
     public TaskQueue getFetchTasks(Sdk sdk, AndroidPlatform platform) throws IOException, GitException {
         TaskQueue tasks = new TaskQueue();
@@ -39,13 +39,13 @@ public class Fetcher {
         GitMirrors mirrors = GitMirrors.load();
         GitFactory.setMirrors(mirrors);
 
-        Project project = new Project(config.getProjectsDir(), sdk);
+        Project project = new Project(config.getOutputDir(), sdk);
         project.delete(Project.COPIED_SOURCE_LOG);
 
         JarListing jarlisting = platform.getAndroidJarListing();
         SourceCopier copier = new SourceCopier(jarlisting.getJavaSourceListing());
         copier.setProject(project);
-        
+
         tasks.add(new InitProjectTask(platform, project, copier));
         for (SdkRepo repo : sdk.getRepos()) {
             IGit git = workdir.getGitRepo(repo.getUrl());
@@ -62,7 +62,7 @@ public class Fetcher {
         return tasks;
     }
 
-    public Config getConfig() {
+    public FetcherConfig getConfig() {
         return config;
     }
 
@@ -78,9 +78,9 @@ public class Fetcher {
         return workdir;
     }
 
-    public void setConfig(Config config) throws IOException {
+    public void setConfig(FetcherConfig config) throws IOException {
         this.config = config;
-        this.sdks = AndroidSdksLoader.load();
+        this.sdks = AndroidSdksLoader.load(this.config.getPlatformsDir());
         this.platforms = new LocalAndroidPlatforms(config.getPlatformsDir());
         this.workdir = new WorkDir(config.getWorkDir());
     }
