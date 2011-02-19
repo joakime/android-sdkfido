@@ -242,9 +242,13 @@ public class SourceOrigins {
 
             VersionTree v = versions.get(version);
             ApiLevel api = v.getTopApiLevel();
-
-            apilevel = api.getLevel();
-            codename = api.getCodename();
+            if (api != null) {
+                apilevel = api.getLevel();
+                codename = api.getCodename();
+            } else {
+                apilevel = null;
+                codename = null;
+            }
             targets.add(new FetchTarget(SourceType.TAG, id, apilevel, codename, version, branchname));
         }
 
@@ -256,9 +260,14 @@ public class SourceOrigins {
 
             VersionTree v = versions.get(version);
             ApiLevel api = v.getTopApiLevel();
+            if (api != null) {
+                apilevel = api.getLevel();
+                codename = api.getCodename();
+            } else {
+                apilevel = null;
+                codename = null;
+            }
 
-            apilevel = api.getLevel();
-            codename = api.getCodename();
             targets.add(new FetchTarget(SourceType.BRANCH, id, apilevel, codename, version, branchname));
         }
     }

@@ -70,6 +70,7 @@ public class Main {
                 if (fetcher.getConfig().isDryRun()) {
                     continue; // skip further processing
                 }
+                // TODO: Enable actually running of tasks.
                 // ConsoleTaskListener listener = new ConsoleTaskListener();
                 // task.run(listener, tasks);
             }

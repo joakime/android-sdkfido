@@ -13,7 +13,6 @@
   </apilevels>
   
   <tags>
-    <tag name="android-sdk-1.5-pre" version="1.5" />
     <tag name="android-sdk-1.5_r1" version="1.5" />
     <tag name="android-sdk-1.5_r3" version="1.5" />
     <tag name="android-sdk-1.6_r1" version="1.6" />
@@ -23,6 +22,11 @@
     <tag name="android-sdk-2.1_r1" version="2.1" />
     <tag name="android-sdk-2.2_r1" version="2.2" />
     <tag name="android-sdk-2.2_r2" version="2.2" />
+    <tag name="android-2.3_r1" version="2.3" />
+    <tag name="android-2.2.1_r2" version="2.2.1" />
+    <tag name="android-2.3.1_r1" version="2.3.1" />
+    <tag name="android-2.3.2_r1" version="2.3.2" />
+    <tag name="android-1.0" version="1.0" />
   </tags>
   
   <branches>
