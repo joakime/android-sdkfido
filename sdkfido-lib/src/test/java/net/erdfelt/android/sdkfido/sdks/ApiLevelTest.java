@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class NewestApiSorterTest {
+public class ApiLevelTest {
     @Test
     public void testSortBasic() {
         String unsortedOrder[] = { "10", "5", "4", "9", "11" };
@@ -35,7 +35,7 @@ public class NewestApiSorterTest {
         }
 
         System.out.printf("Original order: %s%n", order(apis));
-        Collections.sort(apis, NewestApiSorter.INSTANCE);
+        Collections.sort(apis);
         System.out.printf("Sorted order: %s%n", order(apis));
 
         int len = expectedOrder.length;

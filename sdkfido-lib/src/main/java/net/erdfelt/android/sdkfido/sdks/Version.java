@@ -1,85 +1,108 @@
 package net.erdfelt.android.sdkfido.sdks;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import org.apache.commons.lang.StringUtils;
 
-public class Version {
-    private String        version;
-    private Set<Tag>      tags      = new TreeSet<Tag>(NewestTagSorter.INSTANCE);
-    private Set<Branch>   branches  = new TreeSet<Branch>(NewestBranchSorter.INSTANCE);
-    private Set<ApiLevel> apis      = new TreeSet<ApiLevel>(NewestApiSorter.INSTANCE);
-    private Set<String>   codenames = new TreeSet<String>(NewestCodenameSorter.INSTANCE);
+/**
+ * Represents the version identification string.
+ */
+public class Version implements Comparable<Version> {
+    private int major;
+    private int minor;
+    private int point;
 
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
+    public Version(int maj, int minor) {
+        this(maj, minor, 0);
     }
 
-    public void addBranch(Branch branch) {
-        this.branches.add(branch);
+    public Version(int maj, int minor, int point) {
+        this.major = maj;
+        this.minor = minor;
+        this.point = 0;
     }
 
-    public void addApi(ApiLevel api) {
-        this.apis.add(api);
-    }
-
-    public void addCodename(String codename) {
-        this.codenames.add(codename);
-    }
-
-    public Set<String> getCodenames() {
-        return codenames;
-    }
-
-    public void setCodenames(Set<String> codenames) {
-        this.codenames = codenames;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(Set<Tag> tags) {
-        this.tags = tags;
-    }
-
-    public Set<Branch> getBranches() {
-        return branches;
-    }
-
-    public void setBranches(Set<Branch> branches) {
-        this.branches = branches;
-    }
-
-    public Set<ApiLevel> getApis() {
-        return apis;
-    }
-
-    public void setApis(Set<ApiLevel> apis) {
-        this.apis = apis;
-    }
-
-    public Tag getTopTag() {
-        Iterator<Tag> iter = tags.iterator();
-        if (iter.hasNext()) {
-            return iter.next();
+    public Version(String ver) {
+        String parts[] = StringUtils.split(ver, ".");
+        if (parts.length > 3) {
+            throw new IllegalArgumentException("Invalid version identifier string [" + ver
+                    + "] it can only have max 3 parts");
         }
-        return null;
+        this.major = Integer.parseInt(parts[0]);
+        if (parts.length > 1) {
+            this.minor = Integer.parseInt(parts[1]);
+            if (parts.length > 2) {
+                this.point = Integer.parseInt(parts[2]);
+            }
+        }
     }
 
-    public ApiLevel getTopApiLevel() {
-        Iterator<ApiLevel> iter = apis.iterator();
-        if (iter.hasNext()) {
-            return iter.next();
+    @Override
+    public int compareTo(Version o) {
+        int diff = o.major - this.major;
+        if (diff != 0) {
+            return diff;
         }
-        return null;
+
+        diff = o.minor - this.minor;
+        if (diff != 0) {
+            return diff;
+        }
+
+        return o.point - this.point;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Version other = (Version) obj;
+        if (major != other.major) {
+            return false;
+        }
+        if (minor != other.minor) {
+            return false;
+        }
+        if (point != other.point) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getMajor() {
+        return major;
+    }
+
+    public int getMinor() {
+        return minor;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + major;
+        result = prime * result + minor;
+        result = prime * result + point;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder msg = new StringBuilder();
+        msg.append(this.major).append('.').append(this.minor);
+        if (this.point > 0) {
+            msg.append('.').append(this.point);
+        }
+        return msg.toString();
     }
 }

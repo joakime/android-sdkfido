@@ -1,16 +1,17 @@
 package net.erdfelt.android.sdkfido;
 
 import net.erdfelt.android.sdkfido.sdks.SourceType;
+import net.erdfelt.android.sdkfido.sdks.Version;
 
 public class FetchTarget {
     private SourceType type;
     private String     id;
     private String     apilevel;
     private String     codename;
-    private String     version;
+    private Version    version;
     private String     branchname;
 
-    public FetchTarget(SourceType type, String id, String apilevel, String codename, String version, String branchname) {
+    public FetchTarget(SourceType type, String id, String apilevel, String codename, Version version, String branchname) {
         super();
         this.type = type;
         this.id = id;
@@ -28,7 +29,7 @@ public class FetchTarget {
         return codename;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 

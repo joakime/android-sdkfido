@@ -1,24 +1,24 @@
 package net.erdfelt.android.sdkfido.sdks;
 
-import net.erdfelt.android.sdkfido.util.CompareUtil;
-
 import org.apache.commons.digester.annotations.rules.ObjectCreate;
 import org.apache.commons.digester.annotations.rules.SetProperty;
+import org.apache.commons.lang.StringUtils;
 
 @ObjectCreate(pattern = "android-source/apilevels/api")
 public class ApiLevel implements Comparable<ApiLevel> {
     @SetProperty(pattern = "android-source/apilevels/api")
-    private String level;
+    private String  level;
     @SetProperty(pattern = "android-source/apilevels/api")
-    private String version;
+    private Version version;
     @SetProperty(pattern = "android-source/apilevels/api")
-    private String codename;
+    private String  codename;
 
     public ApiLevel() {
-        /* default constructor */
+        super();
     }
 
     public ApiLevel(String level) {
+        super();
         this.level = level;
     }
 
@@ -52,7 +52,7 @@ public class ApiLevel implements Comparable<ApiLevel> {
         return level;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 
@@ -72,12 +72,20 @@ public class ApiLevel implements Comparable<ApiLevel> {
         this.level = level;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Version version) {
         this.version = version;
     }
 
     @Override
     public int compareTo(ApiLevel o) {
-        return CompareUtil.compare(this.level, o.level);
+        if ((o == null) || (StringUtils.isBlank(o.level)) || (!StringUtils.isNumeric(o.level))) {
+            return -1;
+        }
+        if ((StringUtils.isBlank(this.level) || (!StringUtils.isNumeric(this.level)))) {
+            return 1;
+        }
+        int l1 = Integer.parseInt(this.level);
+        int l2 = Integer.parseInt(o.level);
+        return l2 - l1;
     }
 }

@@ -64,6 +64,6 @@ public class SourceOriginsTest {
 
         List<FetchTarget> targets = origins.getFetchTargets();
         Assert.assertThat("targets", targets, notNullValue());
-        Assert.assertThat("targets.size", targets.size(), is(25));
+        Assert.assertThat("targets.size", targets.size(), is(47));
     }
 }

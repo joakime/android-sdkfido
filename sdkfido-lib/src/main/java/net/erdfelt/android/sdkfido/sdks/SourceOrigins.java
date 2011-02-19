@@ -18,20 +18,20 @@ import org.apache.commons.lang.StringUtils;
 @ObjectCreate(pattern = "android-source")
 public class SourceOrigins {
     @SetProperty(pattern = "android-source", attributeName = "spec-version")
-    private int                  specVersion;
+    private int                       specVersion;
 
-    private Set<ApiLevel>        apilevels = new TreeSet<ApiLevel>();
-    private Set<Tag>             tags      = new TreeSet<Tag>();
-    private Set<Branch>          branches  = new TreeSet<Branch>();
-    private Set<Repo>            repos     = new TreeSet<Repo>();
-    private Map<String, Version> versions  = new HashMap<String, Version>();
-    private List<FetchTarget>    targets   = new ArrayList<FetchTarget>();
+    private Set<ApiLevel>             apilevels = new TreeSet<ApiLevel>();
+    private Set<Tag>                  tags      = new TreeSet<Tag>();
+    private Set<Branch>               branches  = new TreeSet<Branch>();
+    private Set<Repo>                 repos     = new TreeSet<Repo>();
+    private Map<Version, VersionTree> versions  = new HashMap<Version, VersionTree>();
+    private List<FetchTarget>         targets   = new ArrayList<FetchTarget>();
 
-    public Map<String, Version> getVersions() {
+    public Map<Version, VersionTree> getVersions() {
         return versions;
     }
 
-    public void setVersions(Map<String, Version> versions) {
+    public void setVersions(Map<Version, VersionTree> versions) {
         this.versions = versions;
     }
 
@@ -173,14 +173,15 @@ public class SourceOrigins {
 
     private void normalizeTargets() {
         targets.clear();
-        String id, apilevel, codename, version, branchname;
+        String id, apilevel, codename, branchname;
+        Version version;
 
         for (ApiLevel api : apilevels) {
             apilevel = api.getLevel();
             codename = api.getCodename();
             version = api.getVersion();
 
-            Version v = versions.get(version);
+            VersionTree v = versions.get(version);
             Tag tag = v.getTopTag();
             if (tag != null) {
                 branchname = tag.getName();
@@ -197,7 +198,7 @@ public class SourceOrigins {
             targets.add(new FetchTarget(SourceType.CODENAME, id, apilevel, codename, version, branchname));
 
             // As VERSION
-            id = api.getVersion();
+            id = api.getVersion().toString();
             targets.add(new FetchTarget(SourceType.VERSION, id, apilevel, codename, version, branchname));
         }
 
@@ -207,7 +208,7 @@ public class SourceOrigins {
             version = tag.getVersion();
             branchname = tag.getName();
 
-            Version v = versions.get(version);
+            VersionTree v = versions.get(version);
             ApiLevel api = v.getTopApiLevel();
 
             apilevel = api.getLevel();
@@ -221,7 +222,7 @@ public class SourceOrigins {
             version = branch.getVersion();
             branchname = branch.getName();
 
-            Version v = versions.get(version);
+            VersionTree v = versions.get(version);
             ApiLevel api = v.getTopApiLevel();
 
             apilevel = api.getLevel();
@@ -235,7 +236,7 @@ public class SourceOrigins {
     private void normalizeVersions() {
         versions.clear();
 
-        Version version;
+        VersionTree version;
 
         for (ApiLevel api : apilevels) {
             version = getVersion(api.getVersion(), true);
@@ -257,18 +258,18 @@ public class SourceOrigins {
         }
     }
 
-    private void setVersion(Version version) {
+    private void setVersion(VersionTree version) {
         versions.put(version.getVersion(), version);
     }
 
-    public Version getVersion(String version) {
+    public VersionTree getVersion(String version) {
         return versions.get(version);
     }
 
-    private Version getVersion(String version, boolean create) {
-        Version v = versions.get(version);
+    private VersionTree getVersion(Version version, boolean create) {
+        VersionTree v = versions.get(version);
         if ((v == null) && (create)) {
-            v = new Version();
+            v = new VersionTree();
             v.setVersion(version);
             versions.put(version, v);
         }

@@ -1,16 +1,24 @@
 package net.erdfelt.android.sdkfido.sdks;
 
-import net.erdfelt.android.sdkfido.util.CompareUtil;
-
 import org.apache.commons.digester.annotations.rules.ObjectCreate;
 import org.apache.commons.digester.annotations.rules.SetProperty;
 
 @ObjectCreate(pattern = "android-source/tags/tag")
 public class Tag implements Comparable<Tag> {
     @SetProperty(pattern = "android-source/tags/tag")
-    private String name;
+    private String  name;
     @SetProperty(pattern = "android-source/tags/tag")
-    private String version;
+    private Version version;
+
+    public Tag() {
+        super();
+    }
+
+    public Tag(String name, String version) {
+        super();
+        this.name = name;
+        this.version = new Version(version);
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -38,7 +46,7 @@ public class Tag implements Comparable<Tag> {
         return name;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 
@@ -54,16 +62,22 @@ public class Tag implements Comparable<Tag> {
         this.name = name;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Version version) {
         this.version = version;
+    }
+
+    public void setVersion(String version) {
+        this.version = new Version(version);
     }
 
     @Override
     public int compareTo(Tag o) {
-        int diff = CompareUtil.compare(this.version, o.version);
+        // Default order for version is reverse
+        int diff = this.version.compareTo(o.version);
         if (diff != 0) {
             return diff;
         }
-        return CompareUtil.compare(this.name, o.name);
+        // Reverse compare on String object
+        return o.name.compareTo(this.name);
     }
 }
