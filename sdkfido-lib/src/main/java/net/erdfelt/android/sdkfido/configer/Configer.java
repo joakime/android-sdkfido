@@ -28,6 +28,7 @@ import org.apache.commons.lang.SystemUtils;
 
 public class Configer {
     private static final Logger       LOG           = Logger.getLogger(Configer.class.getName());
+    public static final File          RC_DIR        = new File(SystemUtils.getUserHome(), ".sdkfido");
     private BeanUtilsBean             bub;
     private Object                    obj;
     private Map<String, Configurable> configurables = new HashMap<String, Configurable>();
@@ -43,8 +44,7 @@ public class Configer {
         this.bub = BeanUtilsBean.getInstance();
 
         // Setup default persistent storage file
-        File homeRcDir = new File(SystemUtils.getUserHome(), ".sdkfido");
-        this.persistFile = new File(homeRcDir, "config.properties");
+        this.persistFile = new File(RC_DIR, "config.properties");
 
         // Load descriptive definitions
         try {
