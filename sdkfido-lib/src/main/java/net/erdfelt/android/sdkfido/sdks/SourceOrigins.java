@@ -192,8 +192,14 @@ public class SourceOrigins {
             id = api.getLevel();
             targets.add(new FetchTarget(SourceType.APILEVEL, id, apilevel, codename, version, branchname));
         }
-        
-        for(ApiLevel api : apilevels) {
+
+        for (ApiLevel api : apilevels) {
+            id = api.getCodename();
+
+            if (StringUtils.isBlank(id)) {
+                continue; // Not a valid FetchTarget (no id to fetch via)
+            }
+
             apilevel = api.getLevel();
             codename = api.getCodename();
             version = api.getVersion();
@@ -207,11 +213,10 @@ public class SourceOrigins {
             }
 
             // As CODENAME
-            id = api.getCodename();
             targets.add(new FetchTarget(SourceType.CODENAME, id, apilevel, codename, version, branchname));
         }
-        
-        for(ApiLevel api : apilevels) {
+
+        for (ApiLevel api : apilevels) {
             apilevel = api.getLevel();
             codename = api.getCodename();
             version = api.getVersion();
