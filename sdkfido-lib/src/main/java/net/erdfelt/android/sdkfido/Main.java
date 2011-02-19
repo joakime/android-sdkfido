@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.erdfelt.android.sdkfido.configer.CmdLineParseException;
 import net.erdfelt.android.sdkfido.configer.ConfigCmdLineParser;
-import net.erdfelt.android.sdkfido.local.AndroidPlatform;
+import net.erdfelt.android.sdkfido.console.TablePrinter;
 import net.erdfelt.android.sdkfido.local.AndroidPlatformNotFoundException;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
 import net.erdfelt.android.sdkfido.logging.Logging;
@@ -46,13 +46,13 @@ public class Main {
 
         Fetcher fetcher = new Fetcher();
         fetcher.setSourceOrigins(origins);
+        fetcher.setConfig(config);
 
         if (config.getFetchTargets().isEmpty()) {
             showFetchTargetList(fetcher);
             return;
         }
 
-        fetcher.setConfig(config);
         for (String targetName : config.getFetchTargets()) {
             FetchTarget target = fetcher.getFetchTarget(targetName);
             fetchTarget(fetcher, target);
@@ -88,22 +88,25 @@ public class Main {
         LocalAndroidPlatforms platforms = fetcher.getPlatforms();
         List<FetchTarget> targets = fetcher.getSourceOrigins().getFetchTargets();
 
-        System.out.printf("Target | Version | API | Codename | Branch | SDK Avail%n");
+        TablePrinter table = new TablePrinter("Target", "Type", "API", "Version", "Codename", "Branch", "SDK Avail?");
+
         for (FetchTarget target : targets) {
-            StringBuilder buf = new StringBuilder();
-            buf.append(target.getId()).append(" ");
-            buf.append(target.getType()).append(" ");
-            buf.append(target.getApilevel()).append(" ");
-            buf.append(target.getVersion()).append(" ");
-            buf.append(target.getCodename()).append(" ");
-            buf.append(target.getBranchname());
+            table.startRow();
+            table.addCell(target.getId());
+            table.addCell(target.getType());
+            table.addCell(target.getApilevel());
+            table.addCell(target.getVersion());
+            table.addCell(target.getCodename());
+            table.addCell(target.getBranchname());
 
             if (platforms.hasApiLevel(target.getApilevel())) {
-                buf.append(" Available");
+                table.addCell("Available");
             } else {
-                buf.append(" not in sdk dir");
+                table.addCell("not in sdk dir");
             }
-            System.out.println(buf);
+            table.endRow();
         }
+
+        table.print(System.out);
     }
 }

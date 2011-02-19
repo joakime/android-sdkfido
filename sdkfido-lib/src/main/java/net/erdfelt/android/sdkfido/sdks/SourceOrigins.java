@@ -1,7 +1,6 @@
 package net.erdfelt.android.sdkfido.sdks;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,10 +191,38 @@ public class SourceOrigins {
             // As APILEVEL
             id = api.getLevel();
             targets.add(new FetchTarget(SourceType.APILEVEL, id, apilevel, codename, version, branchname));
+        }
+        
+        for(ApiLevel api : apilevels) {
+            apilevel = api.getLevel();
+            codename = api.getCodename();
+            version = api.getVersion();
+
+            VersionTree v = versions.get(version);
+            Tag tag = v.getTopTag();
+            if (tag != null) {
+                branchname = tag.getName();
+            } else {
+                branchname = null;
+            }
 
             // As CODENAME
             id = api.getCodename();
             targets.add(new FetchTarget(SourceType.CODENAME, id, apilevel, codename, version, branchname));
+        }
+        
+        for(ApiLevel api : apilevels) {
+            apilevel = api.getLevel();
+            codename = api.getCodename();
+            version = api.getVersion();
+
+            VersionTree v = versions.get(version);
+            Tag tag = v.getTopTag();
+            if (tag != null) {
+                branchname = tag.getName();
+            } else {
+                branchname = null;
+            }
 
             // As VERSION
             id = api.getVersion().toString();
@@ -229,8 +256,6 @@ public class SourceOrigins {
             codename = api.getCodename();
             targets.add(new FetchTarget(SourceType.BRANCH, id, apilevel, codename, version, branchname));
         }
-
-        Collections.sort(targets, FetchTargetComparator.INSTANCE);
     }
 
     private void normalizeVersions() {
