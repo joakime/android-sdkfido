@@ -13,7 +13,6 @@
   <modules>
     <module>sdkfido-lib</module>
     <module>sdkfido-ui</module>
-    <module>sdkfido-cli</module>
     <module>sdkfido-distribution</module>
   </modules>
   <build>
