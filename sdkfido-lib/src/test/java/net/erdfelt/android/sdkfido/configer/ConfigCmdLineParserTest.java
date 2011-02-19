@@ -31,20 +31,6 @@ public class ConfigCmdLineParserTest {
     public TestingDir testingdir = new TestingDir();
 
     @Test
-    public void testEmptyArgs() throws CmdLineParseException {
-        FetcherConfig config = new FetcherConfig();
-
-        StringWriter capture = new StringWriter();
-        ConfigCmdLineParser parser = new ConfigCmdLineParser(this, config);
-        parser.setOut(capture);
-        String[] args = new String[0];
-        parser.parse(args);
-
-        assertNoThrowable(capture);
-        assertContains(capture, "Usage: ");
-    }
-
-    @Test
     public void testHelp() throws CmdLineParseException {
         FetcherConfig config = new FetcherConfig();
 

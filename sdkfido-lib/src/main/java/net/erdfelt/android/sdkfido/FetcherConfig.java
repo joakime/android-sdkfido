@@ -78,9 +78,11 @@ public class FetcherConfig {
         this.rcDir = new File(SystemUtils.getUserHome(), ".sdkfido");
         this.workDir = new File(rcDir, "work");
         try {
+            // Try to guess the android platforms directory.
             this.platformsDir = LocalAndroidPlatforms.findLocalJavaSdk();
         } catch (IOException e) {
-            LOG.log(Level.WARNING, e.getMessage());
+            // Be quiet about inability to find android platforms directory,
+            // as this value can be provided to the system by the user.
         }
         this.outputDir = new File(rcDir, "projects");
     }
@@ -111,6 +113,13 @@ public class FetcherConfig {
     }
 
     public File getPlatformsDir() {
+        if (platformsDir == null) {
+            try {
+                this.platformsDir = LocalAndroidPlatforms.findLocalJavaSdk();
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, e.getMessage());
+            }
+        }
         return platformsDir;
     }
 

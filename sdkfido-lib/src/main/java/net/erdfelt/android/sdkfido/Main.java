@@ -49,6 +49,8 @@ public class Main {
         fetcher.setConfig(config);
 
         if (config.getFetchTargets().isEmpty()) {
+            parser.usage();
+            System.out.println();
             showFetchTargetList(fetcher);
             return;
         }
@@ -85,6 +87,8 @@ public class Main {
 
     private void showFetchTargetList(Fetcher fetcher) {
         System.out.println("Available Android Java Fetch Targets:");
+        System.out.println("(Sorted newest to oldest within type groupings)");
+        System.out.println();
         LocalAndroidPlatforms platforms = fetcher.getPlatforms();
         List<FetchTarget> targets = fetcher.getSourceOrigins().getFetchTargets();
 
