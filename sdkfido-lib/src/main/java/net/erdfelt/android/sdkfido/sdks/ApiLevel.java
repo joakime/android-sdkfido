@@ -6,13 +6,21 @@ import org.apache.commons.digester.annotations.rules.ObjectCreate;
 import org.apache.commons.digester.annotations.rules.SetProperty;
 
 @ObjectCreate(pattern = "android-source/apilevels/api")
-public class ApiLevel implements Comparable<ApiLevel>{
+public class ApiLevel implements Comparable<ApiLevel> {
     @SetProperty(pattern = "android-source/apilevels/api")
     private String level;
     @SetProperty(pattern = "android-source/apilevels/api")
     private String version;
     @SetProperty(pattern = "android-source/apilevels/api")
     private String codename;
+
+    public ApiLevel() {
+        /* default constructor */
+    }
+
+    public ApiLevel(String level) {
+        this.level = level;
+    }
 
     @Override
     public boolean equals(Object obj) {

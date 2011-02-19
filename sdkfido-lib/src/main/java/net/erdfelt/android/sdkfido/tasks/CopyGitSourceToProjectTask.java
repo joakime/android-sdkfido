@@ -7,18 +7,15 @@ import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.project.SourceCopier;
-import net.erdfelt.android.sdkfido.sdks.SdkRepo;
 
 public class CopyGitSourceToProjectTask implements Task {
     private static final Logger LOG = Logger.getLogger(CopyGitSourceToProjectTask.class.getName());
     private IGit                git;
-    private SdkRepo             repo;
     private SourceCopier        copier;
 
-    public CopyGitSourceToProjectTask(IGit git, SdkRepo repo, SourceCopier copier) {
+    public CopyGitSourceToProjectTask(IGit git, SourceCopier copier) {
         super();
         this.git = git;
-        this.repo = repo;
         this.copier = copier;
     }
 
@@ -38,14 +35,6 @@ public class CopyGitSourceToProjectTask implements Task {
         this.copier = copier;
     }
 
-    public SdkRepo getRepo() {
-        return repo;
-    }
-
-    public void setRepo(SdkRepo repo) {
-        this.repo = repo;
-    }
-
     @Override
     public String getName() {
         return "Copy Sources";
@@ -53,9 +42,9 @@ public class CopyGitSourceToProjectTask implements Task {
 
     @Override
     public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
-        for (String include : repo.getIncludes()) {
-            copier.copyTree(git.getDir(), include);
-        }
+//        for (String include : repo.getIncludes()) {
+//            copier.copyTree(git.getDir(), include);
+//        }
         LOG.info("Copier Results: " + copier);
     }
 }

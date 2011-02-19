@@ -13,7 +13,9 @@ package net.erdfelt.android.sdkfido.sdks;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
+import java.util.List;
 
+import net.erdfelt.android.sdkfido.FetchTarget;
 import net.erdfelt.android.sdkfido.logging.Logging;
 
 import org.junit.Assert;
@@ -54,5 +56,14 @@ public class SourceOriginsTest {
         Repo repo = sdks.getRepo("git://android.git.kernel.org/platform/frameworks/base.git");
         Assert.assertThat(prefix, repo, notNullValue());
         Assert.assertThat(prefix + ".basedirs.size", repo.getBasedirs().size(), greaterThanOrEqualTo(10));
+    }
+
+    @Test
+    public void testGetFetchTargets() throws IOException {
+        SourceOrigins origins = SourceOriginsLoader.load();
+
+        List<FetchTarget> targets = origins.getFetchTargets();
+        Assert.assertThat("targets", targets, notNullValue());
+        Assert.assertThat("targets.size", targets.size(), is(25));
     }
 }

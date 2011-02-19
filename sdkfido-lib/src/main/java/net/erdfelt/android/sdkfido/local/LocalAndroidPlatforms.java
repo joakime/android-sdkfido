@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import net.erdfelt.android.sdkfido.sdks.AndroidSdks;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -290,5 +288,14 @@ public class LocalAndroidPlatforms {
             }
         }
         throw new FileNotFoundException("android binary: " + binname);
+    }
+
+    public boolean hasApiLevel(String apilevel) {
+        for (AndroidPlatform platform : platforms.values()) {
+            if (StringUtils.equals(String.valueOf(platform.getApiLevel()), apilevel)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

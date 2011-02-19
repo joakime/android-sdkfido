@@ -1,27 +1,28 @@
 package net.erdfelt.android.sdkfido.sdks;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Version {
-    private String      version;
-    private Set<String> tags      = new TreeSet<String>();
-    private Set<String> branches  = new TreeSet<String>();
-    private Set<String> apis      = new TreeSet<String>();
-    private Set<String> codenames = new TreeSet<String>();
-    
-    public void addTag(String tag) {
+    private String        version;
+    private Set<Tag>      tags      = new TreeSet<Tag>(NewestTagSorter.INSTANCE);
+    private Set<Branch>   branches  = new TreeSet<Branch>(NewestBranchSorter.INSTANCE);
+    private Set<ApiLevel> apis      = new TreeSet<ApiLevel>(NewestApiSorter.INSTANCE);
+    private Set<String>   codenames = new TreeSet<String>(NewestCodenameSorter.INSTANCE);
+
+    public void addTag(Tag tag) {
         this.tags.add(tag);
     }
-    
-    public void addBranch(String branch) {
+
+    public void addBranch(Branch branch) {
         this.branches.add(branch);
     }
-    
-    public void addApi(String api) {
+
+    public void addApi(ApiLevel api) {
         this.apis.add(api);
     }
-    
+
     public void addCodename(String codename) {
         this.codenames.add(codename);
     }
@@ -42,27 +43,43 @@ public class Version {
         this.version = version;
     }
 
-    public Set<String> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<String> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 
-    public Set<String> getBranches() {
+    public Set<Branch> getBranches() {
         return branches;
     }
 
-    public void setBranches(Set<String> branches) {
+    public void setBranches(Set<Branch> branches) {
         this.branches = branches;
     }
 
-    public Set<String> getApis() {
+    public Set<ApiLevel> getApis() {
         return apis;
     }
 
-    public void setApis(Set<String> apis) {
+    public void setApis(Set<ApiLevel> apis) {
         this.apis = apis;
+    }
+
+    public Tag getTopTag() {
+        Iterator<Tag> iter = tags.iterator();
+        if (iter.hasNext()) {
+            return iter.next();
+        }
+        return null;
+    }
+
+    public ApiLevel getTopApiLevel() {
+        Iterator<ApiLevel> iter = apis.iterator();
+        if (iter.hasNext()) {
+            return iter.next();
+        }
+        return null;
     }
 }

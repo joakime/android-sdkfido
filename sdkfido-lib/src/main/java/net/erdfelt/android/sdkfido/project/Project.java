@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.erdfelt.android.sdkfido.sdks.Sdk;
 import net.erdfelt.android.sdkfido.util.PathUtil;
 import net.erdfelt.android.sdkfido.util.PropertyExpander;
 
@@ -30,12 +29,12 @@ public class Project {
     private File                srcResources;
     private String              id;
 
-    public Project(File projectsDir, Sdk sdk) {
-        this.id = sdk.getVersion();
-        this.baseDir = new File(projectsDir, "android-" + sdk.getVersion());
-        this.srcJava = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/java"));
-        this.srcResources = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/resources"));
-    }
+//    public Project(File projectsDir, Sdk sdk) {
+//        this.id = sdk.getVersion();
+//        this.baseDir = new File(projectsDir, "android-" + sdk.getVersion());
+//        this.srcJava = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/java"));
+//        this.srcResources = new File(baseDir, FilenameUtils.separatorsToSystem("src/main/resources"));
+//    }
 
     public File getSrcJava() {
         return srcJava;

@@ -1,9 +1,14 @@
 package net.erdfelt.android.sdkfido.sdks;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import net.erdfelt.android.sdkfido.FetchTarget;
 
 import org.apache.commons.digester.annotations.rules.ObjectCreate;
 import org.apache.commons.digester.annotations.rules.SetNext;
@@ -20,6 +25,7 @@ public class SourceOrigins {
     private Set<Branch>          branches  = new TreeSet<Branch>();
     private Set<Repo>            repos     = new TreeSet<Repo>();
     private Map<String, Version> versions  = new HashMap<String, Version>();
+    private List<FetchTarget>    targets   = new ArrayList<FetchTarget>();
 
     public Map<String, Version> getVersions() {
         return versions;
@@ -161,24 +167,92 @@ public class SourceOrigins {
      * Connect the various versions discovered together.
      */
     public void normalize() {
+        normalizeVersions();
+        normalizeTargets();
+    }
+
+    private void normalizeTargets() {
+        targets.clear();
+        String id, apilevel, codename, version, branchname;
+
+        for (ApiLevel api : apilevels) {
+            apilevel = api.getLevel();
+            codename = api.getCodename();
+            version = api.getVersion();
+
+            Version v = versions.get(version);
+            Tag tag = v.getTopTag();
+            if (tag != null) {
+                branchname = tag.getName();
+            } else {
+                branchname = null;
+            }
+
+            // As APILEVEL
+            id = api.getLevel();
+            targets.add(new FetchTarget(SourceType.APILEVEL, id, apilevel, codename, version, branchname));
+
+            // As CODENAME
+            id = api.getCodename();
+            targets.add(new FetchTarget(SourceType.CODENAME, id, apilevel, codename, version, branchname));
+
+            // As VERSION
+            id = api.getVersion();
+            targets.add(new FetchTarget(SourceType.VERSION, id, apilevel, codename, version, branchname));
+        }
+
+        // As TAG
+        for (Tag tag : tags) {
+            id = tag.getName();
+            version = tag.getVersion();
+            branchname = tag.getName();
+
+            Version v = versions.get(version);
+            ApiLevel api = v.getTopApiLevel();
+
+            apilevel = api.getLevel();
+            codename = api.getCodename();
+            targets.add(new FetchTarget(SourceType.TAG, id, apilevel, codename, version, branchname));
+        }
+
+        // As BRANCH
+        for (Branch branch : branches) {
+            id = branch.getName();
+            version = branch.getVersion();
+            branchname = branch.getName();
+
+            Version v = versions.get(version);
+            ApiLevel api = v.getTopApiLevel();
+
+            apilevel = api.getLevel();
+            codename = api.getCodename();
+            targets.add(new FetchTarget(SourceType.BRANCH, id, apilevel, codename, version, branchname));
+        }
+
+        Collections.sort(targets, FetchTargetComparator.INSTANCE);
+    }
+
+    private void normalizeVersions() {
+        versions.clear();
+
         Version version;
 
         for (ApiLevel api : apilevels) {
             version = getVersion(api.getVersion(), true);
-            version.addApi(api.getLevel());
+            version.addApi(api);
             version.addCodename(api.getCodename());
             setVersion(version);
         }
 
         for (Tag tag : tags) {
             version = getVersion(tag.getVersion(), true);
-            version.addTag(tag.getName());
+            version.addTag(tag);
             setVersion(version);
         }
 
         for (Branch branch : branches) {
             version = getVersion(branch.getVersion(), true);
-            version.addBranch(branch.getName());
+            version.addBranch(branch);
             setVersion(version);
         }
     }
@@ -199,5 +273,9 @@ public class SourceOrigins {
             versions.put(version, v);
         }
         return v;
+    }
+
+    public List<FetchTarget> getFetchTargets() {
+        return targets;
     }
 }
