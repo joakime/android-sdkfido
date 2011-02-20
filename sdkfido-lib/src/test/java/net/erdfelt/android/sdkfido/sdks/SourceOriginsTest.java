@@ -64,6 +64,49 @@ public class SourceOriginsTest {
 
         List<FetchTarget> targets = origins.getFetchTargets();
         Assert.assertThat("targets", targets, notNullValue());
-        Assert.assertThat("targets.size", targets.size(), is(47));
+        Assert.assertThat("targets.size", targets.size(), greaterThan(45));
+    }
+
+    @Test
+    public void testGetApiLevelByVersion() throws IOException {
+        SourceOrigins origins = SourceOriginsLoader.load();
+
+        ApiLevel api = origins.getApiLevelByVersion(new Version("2.3.1"));
+        Assert.assertThat("version 2.3.1 -> ApiLevel", api, notNullValue());
+        Assert.assertThat("version 2.3.1 -> ApiLevel.version", api.getVersion(), is(new Version("2.3")));
+        Assert.assertThat("version 2.3.1 -> ApiLevel.level", api.getLevel(), is("9"));
+        Assert.assertThat("version 2.3.1 -> ApiLevel.codename", api.getCodename(), is("gingerbread"));
+    }
+
+    @Test
+    public void testGetFetchTargetByApiLevel() throws IOException {
+        SourceOrigins origins = SourceOriginsLoader.load();
+
+        String id = "8";
+        FetchTarget target = origins.getFetchTarget(id);
+        String prefix = "target[" + id + "]";
+        Assert.assertThat(prefix, target, notNullValue());
+        Assert.assertThat(prefix + ": id", target.getId(), is(id));
+        Assert.assertThat(prefix + ": type", target.getType(), is(SourceType.APILEVEL));
+        Assert.assertThat(prefix + ": api level", target.getApilevel(), is(id));
+        Assert.assertThat(prefix + ": version", target.getVersion(), is(new Version("2.2")));
+        Assert.assertThat(prefix + ": code name", target.getCodename(), is("froyo"));
+        Assert.assertThat(prefix + ": branch name", target.getBranchname(), is("android-sdk-2.2_r2"));
+    }
+
+    @Test
+    public void testGetFetchTargetByTag() throws IOException {
+        SourceOrigins origins = SourceOriginsLoader.load();
+
+        String id = "android-2.3.1_r1";
+        FetchTarget target = origins.getFetchTarget(id);
+        String prefix = "target[" + id + "]";
+        Assert.assertThat(prefix, target, notNullValue());
+        Assert.assertThat(prefix + ": id", target.getId(), is(id));
+        Assert.assertThat(prefix + ": type", target.getType(), is(SourceType.TAG));
+        Assert.assertThat(prefix + ": api level", target.getApilevel(), is("9"));
+        Assert.assertThat(prefix + ": version", target.getVersion(), is(new Version("2.3.1")));
+        Assert.assertThat(prefix + ": code name", target.getCodename(), is("gingerbread"));
+        Assert.assertThat(prefix + ": branch name", target.getBranchname(), is(id));
     }
 }

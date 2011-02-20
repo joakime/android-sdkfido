@@ -1,10 +1,11 @@
 package net.erdfelt.android.sdkfido.sdks;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import net.erdfelt.android.sdkfido.FetchTarget;
@@ -19,11 +20,11 @@ public class SourceOrigins {
     @SetProperty(pattern = "android-source", attributeName = "spec-version")
     private int                       specVersion;
 
-    private Set<ApiLevel>             apilevels = new TreeSet<ApiLevel>();
+    private TreeSet<ApiLevel>         apilevels = new TreeSet<ApiLevel>();
     private Set<Tag>                  tags      = new TreeSet<Tag>();
     private Set<Branch>               branches  = new TreeSet<Branch>();
     private Set<Repo>                 repos     = new TreeSet<Repo>();
-    private Map<Version, VersionTree> versions  = new HashMap<Version, VersionTree>();
+    private Map<Version, VersionTree> versions  = new TreeMap<Version, VersionTree>(VersionComparator.INSTANCE);
     private List<FetchTarget>         targets   = new ArrayList<FetchTarget>();
 
     public Map<Version, VersionTree> getVersions() {
@@ -46,8 +47,9 @@ public class SourceOrigins {
         return apilevels;
     }
 
-    public void setApilevels(Set<ApiLevel> apilevels) {
-        this.apilevels = apilevels;
+    public void setApilevels(Set<ApiLevel> apis) {
+        this.apilevels.clear();
+        this.apilevels.addAll(apis);
     }
 
     @SetNext
@@ -240,8 +242,7 @@ public class SourceOrigins {
             version = tag.getVersion();
             branchname = tag.getName();
 
-            VersionTree v = versions.get(version);
-            ApiLevel api = v.getTopApiLevel();
+            ApiLevel api = getApiLevelByVersion(version);
             if (api != null) {
                 apilevel = api.getLevel();
                 codename = api.getCodename();
@@ -297,6 +298,29 @@ public class SourceOrigins {
         }
     }
 
+    public ApiLevel getApiLevelByVersion(Version version) {
+        ApiLevel last = null;
+
+        Iterator<ApiLevel> reviter = apilevels.descendingIterator();
+        int diff;
+        while (reviter.hasNext()) {
+            ApiLevel api = reviter.next();
+            diff = api.getVersion().compareTo(version);
+            if (diff > 0) {
+                // Too small
+                last = api;
+                continue; // Skip
+            } else if (diff == 0) {
+                // Exact match
+                return api;
+            } else {
+                // Too large
+                return last;
+            }
+        }
+        return last;
+    }
+
     private void setVersion(VersionTree version) {
         versions.put(version.getVersion(), version);
     }
@@ -317,5 +341,14 @@ public class SourceOrigins {
 
     public List<FetchTarget> getFetchTargets() {
         return targets;
+    }
+
+    public FetchTarget getFetchTarget(String id) {
+        for (FetchTarget target : targets) {
+            if (target.getId().equals(id)) {
+                return target;
+            }
+        }
+        return null;
     }
 }
