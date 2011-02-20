@@ -3,7 +3,6 @@ package net.erdfelt.android.sdkfido.tasks;
 import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.Task;
-import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.git.IGit;
 
@@ -23,7 +22,7 @@ public class GitCloneTask implements Task {
     }
 
     @Override
-    public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
+    public void run(TaskQueue tasks) throws Throwable {
         if (git.exists()) {
             LOG.info("git clone already performed, issuing pull instead.");
             tasks.insertAtHead(new GitPullRemoteTask(git));

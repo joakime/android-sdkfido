@@ -3,7 +3,6 @@ package net.erdfelt.android.sdkfido.tasks;
 import java.io.File;
 
 import net.erdfelt.android.sdkfido.Task;
-import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.project.OutputProject;
@@ -30,11 +29,12 @@ public class ProjectCopySourceTask implements Task {
     }
 
     @Override
-    public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
+    public void run(TaskQueue tasks) throws Throwable {
         for (BaseDir basedir : repo.getBasedirs()) {
             String include = basedir.getPath();
             File sourceDir = new File(git.getDir(), FilenameUtils.separatorsToSystem(include));
-            project.copySource(sourceDir, basedir.getProject());
+            project.startSubProject(basedir.getProject());
+            project.copySource(sourceDir);
         }
     }
 }

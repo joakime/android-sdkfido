@@ -1,7 +1,6 @@
 package net.erdfelt.android.sdkfido.tasks;
 
 import net.erdfelt.android.sdkfido.Task;
-import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.git.IGit;
 
@@ -25,7 +24,7 @@ public class GitSwitchBranchTask implements Task {
     }
 
     @Override
-    public void run(TaskListener listener, TaskQueue tasks) throws Throwable {
+    public void run(TaskQueue tasks) throws Throwable {
         git.checkoutBranch(branch);
     }
 }

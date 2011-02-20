@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 public class SourceCopier {
     private static final Logger LOG         = Logger.getLogger(SourceCopier.class.getName());
     private LinkedList<String>  javalisting = new LinkedList<String>();
-    private Project             project;
+    private OutputProject       project;
     private FileWriter          logwriter;
     private PrintWriter         out;
     private int                 countCopied;
@@ -31,12 +31,12 @@ public class SourceCopier {
         this.javalisting.addAll(javalisting);
     }
 
-    public void setProject(Project project) {
+    public void setProject(OutputProject project) {
         this.project = project;
     }
 
     public void init() throws IOException {
-        File logfile = new File(project.getBaseDir(), Project.COPIED_SOURCE_LOG);
+        File logfile = project.getBaseDir().getFile("sdkfido.log");
         logwriter = new FileWriter(logfile, false);
         out = new PrintWriter(logwriter);
 
@@ -51,7 +51,7 @@ public class SourceCopier {
         ListIterator<String> iterlisting = javalisting.listIterator();
         while (iterlisting.hasNext()) {
             javafilename = iterlisting.next();
-            searchFile = project.getSrcJava(javafilename);
+            searchFile = project.getSourceDir().getFile(javafilename);
             if (searchFile.exists()) {
                 iterlisting.remove();
                 out.println("[FOUND] " + javafilename);
@@ -89,10 +89,10 @@ public class SourceCopier {
                     } else {
                         countExtras++;
                     }
-                    FileUtils.copyFile(path, project.getSrcJava(relpath));
+                    // FileUtils.copyFile(path, project.getSrcJava(relpath));
                 } else {
                     countResources++;
-                    FileUtils.copyFile(path, project.getSrcResource(relpath));
+                    // FileUtils.copyFile(path, project.getSrcResource(relpath));
                 }
             }
         }

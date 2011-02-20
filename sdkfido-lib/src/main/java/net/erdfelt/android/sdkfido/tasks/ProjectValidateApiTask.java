@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.erdfelt.android.sdkfido.Task;
-import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
 import net.erdfelt.android.sdkfido.project.OutputProject;
 
@@ -36,15 +35,15 @@ public class ProjectValidateApiTask implements Task {
     }
 
     @Override
-    public void run(TaskListener tasklistener, TaskQueue tasks) throws Throwable {
-        List<String> javapaths = project.getPathsOfType(".java");
+    public void run(TaskQueue tasks) throws Throwable {
+        List<String> javapaths = project.getSourceDir().findFilePaths("^.*\\.java$");
         for (String javapath : javapaths) {
             validateJavaPackage(javapath);
         }
     }
 
     private void validateJavaPackage(String javapath) {
-        File javafile = project.getSrcJava(javapath);
+        File javafile = project.getSourceDir().getFile(javapath);
         FileReader reader = null;
         BufferedReader buf = null;
         try {

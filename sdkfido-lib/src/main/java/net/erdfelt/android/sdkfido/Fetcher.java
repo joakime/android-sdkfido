@@ -40,37 +40,37 @@ public class Fetcher {
         OutputProject project = null;
         switch (config.getOutputType()) {
             case MAVEN_BUILD:
-                project = new MavenOutputProject();
+                project = new MavenOutputProject(config.getOutputDir(), target);
                 break;
             case MAVEN_BUILD_MULTI:
-                project = new MavenMultimoduleOutputProject();
+                project = new MavenMultimoduleOutputProject(config.getOutputDir(), target);
                 break;
             case SDK_SOURCE:
-                project = new SdkOutputProject();
+                project = new SdkOutputProject(getPlatforms(), target);
                 break;
             case ANT_BUILD:
             default:
-                project = new AntOutputProject();
+                project = new AntOutputProject(config.getOutputDir(), target);
                 break;
         }
-        
+
         tasks.add(new ProjectInitTask(project));
-        
-        for(Repo repo: getSourceOrigins().getRepos()) {
+
+        for (Repo repo : getSourceOrigins().getRepos()) {
             IGit git = workdir.getGitRepo(repo.getUrl());
-            
+
             tasks.add(new GitCloneTask(git, repo.getUrl()));
             tasks.add(new GitSwitchBranchTask(git, target.getBranchname()));
             tasks.add(new ProjectCopySourceTask(git, repo, project));
         }
-        
-        if(target.getApilevel() != null) {
+
+        if (target.getApilevel() != null) {
             // JarListing jarlisting = platform.getAndroidJarListing();
             tasks.add(new ProjectValidateApiTask(project, target.getApilevel()));
         }
 
         tasks.add(new ProjectCloseTask(project));
-        
+
         return tasks;
     }
 

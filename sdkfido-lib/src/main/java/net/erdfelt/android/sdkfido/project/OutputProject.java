@@ -1,47 +1,22 @@
 package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
-public abstract class OutputProject {
+public interface OutputProject {
+    public void startSubProject(String projectId) throws IOException;
 
-    public void start() {
-        // TODO Auto-generated method stub
+    public void copySource(File gitIncludeDir) throws IOException;
 
-    }
+    public Dir getBaseDir();
 
-    protected void create() {
-        // TODO Auto-generated method stub
+    public Dir getSourceDir();
 
-    }
+    public Dir getResourceDir();
 
-    protected void cleanSourceTree() {
-        // TODO Auto-generated method stub
+    public Dir getOutputDir();
 
-    }
+    public void init() throws IOException;
 
-    public void copySource(File sourceDir, String basedirProjectId) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void init() {
-        create();
-        cleanSourceTree();
-    }
-
-    public void close() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public List<String> getPathsOfType(String string) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public File getSrcJava(String javapath) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    public void close() throws IOException;
 }
