@@ -1,5 +1,7 @@
 package net.erdfelt.android.sdkfido;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.erdfelt.android.sdkfido.sdks.SourceType;
 import net.erdfelt.android.sdkfido.sdks.Version;
 
@@ -19,6 +21,10 @@ public class FetchTarget {
         this.codename = codename;
         this.version = version;
         this.branchname = branchname;
+    }
+
+    public boolean hasSCM() {
+        return StringUtils.isNotBlank(this.branchname);
     }
 
     public String getApilevel() {

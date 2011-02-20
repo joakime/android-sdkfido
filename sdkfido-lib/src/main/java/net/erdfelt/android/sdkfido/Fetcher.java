@@ -5,9 +5,22 @@ import java.io.IOException;
 import net.erdfelt.android.sdkfido.git.GitException;
 import net.erdfelt.android.sdkfido.git.GitFactory;
 import net.erdfelt.android.sdkfido.git.GitMirrors;
+import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
+import net.erdfelt.android.sdkfido.project.AntOutputProject;
+import net.erdfelt.android.sdkfido.project.MavenMultimoduleOutputProject;
+import net.erdfelt.android.sdkfido.project.MavenOutputProject;
+import net.erdfelt.android.sdkfido.project.OutputProject;
+import net.erdfelt.android.sdkfido.project.SdkOutputProject;
+import net.erdfelt.android.sdkfido.sdks.Repo;
 import net.erdfelt.android.sdkfido.sdks.SourceOrigins;
 import net.erdfelt.android.sdkfido.sdks.SourceOriginsLoader;
+import net.erdfelt.android.sdkfido.tasks.GitCloneTask;
+import net.erdfelt.android.sdkfido.tasks.GitSwitchBranchTask;
+import net.erdfelt.android.sdkfido.tasks.ProjectCloseTask;
+import net.erdfelt.android.sdkfido.tasks.ProjectCopySourceTask;
+import net.erdfelt.android.sdkfido.tasks.ProjectInitTask;
+import net.erdfelt.android.sdkfido.tasks.ProjectValidateApiTask;
 
 /**
  * Main controller class.
@@ -24,26 +37,40 @@ public class Fetcher {
         GitMirrors mirrors = GitMirrors.load();
         GitFactory.setMirrors(mirrors);
 
-        // Project project = new Project(config.getOutputDir(), sdk);
-        // project.delete(Project.COPIED_SOURCE_LOG);
+        OutputProject project = null;
+        switch (config.getOutputType()) {
+            case MAVEN_BUILD:
+                project = new MavenOutputProject();
+                break;
+            case MAVEN_BUILD_MULTI:
+                project = new MavenMultimoduleOutputProject();
+                break;
+            case SDK_SOURCE:
+                project = new SdkOutputProject();
+                break;
+            case ANT_BUILD:
+            default:
+                project = new AntOutputProject();
+                break;
+        }
+        
+        tasks.add(new ProjectInitTask(project));
+        
+        for(Repo repo: getSourceOrigins().getRepos()) {
+            IGit git = workdir.getGitRepo(repo.getUrl());
+            
+            tasks.add(new GitCloneTask(git, repo.getUrl()));
+            tasks.add(new GitSwitchBranchTask(git, target.getBranchname()));
+            tasks.add(new ProjectCopySourceTask(git, repo, project));
+        }
+        
+        if(target.getApilevel() != null) {
+            // JarListing jarlisting = platform.getAndroidJarListing();
+            tasks.add(new ProjectValidateApiTask(project, target.getApilevel()));
+        }
 
-        // JarListing jarlisting = platform.getAndroidJarListing();
-        // SourceCopier copier = new SourceCopier(jarlisting.getJavaSourceListing());
-        // copier.setProject(project);
-
-        // tasks.add(new InitProjectTask(platform, project, copier));
-        // for (SdkRepo repo : sdk.getRepos()) {
-        // IGit git = workdir.getGitRepo(repo.getUrl());
-
-        // tasks.add(new GitCloneTask(git, repo.getUrl()));
-        // tasks.add(new GitSwitchBranchTask(git, repo.getBranch()));
-        // tasks.add(new CopyGitSourceToProjectTask(git, repo, copier));
-        // }
-        // tasks.add(new ProcessAidlFilesTask(platforms, project));
-        // tasks.add(new ValidateJavaPackagesTask(project));
-        // tasks.add(new GenerateBuildFilesTask(project, sdk));
-        // tasks.add(new CloseProjectTask(copier));
-
+        tasks.add(new ProjectCloseTask(project));
+        
         return tasks;
     }
 
@@ -74,10 +101,5 @@ public class Fetcher {
         if (this.origins == null) {
             this.origins = SourceOriginsLoader.load();
         }
-    }
-
-    public FetchTarget getFetchTarget(String targetName) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

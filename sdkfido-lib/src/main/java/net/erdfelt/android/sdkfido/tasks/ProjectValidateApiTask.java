@@ -13,18 +13,20 @@ import java.util.regex.Pattern;
 import net.erdfelt.android.sdkfido.Task;
 import net.erdfelt.android.sdkfido.TaskListener;
 import net.erdfelt.android.sdkfido.TaskQueue;
-import net.erdfelt.android.sdkfido.project.Project;
+import net.erdfelt.android.sdkfido.project.OutputProject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-public class ValidateJavaPackagesTask implements Task {
-    private static final Logger LOG = Logger.getLogger(ValidateJavaPackagesTask.class.getName());
-    private Project             project;
+public class ProjectValidateApiTask implements Task {
+    private static final Logger LOG = Logger.getLogger(ProjectValidateApiTask.class.getName());
+    private OutputProject       project;
+    private String              apilevel;
     private Pattern             packagePat;
 
-    public ValidateJavaPackagesTask(Project project) {
+    public ProjectValidateApiTask(OutputProject project, String apilevel) {
         this.project = project;
+        this.apilevel = apilevel;
         this.packagePat = Pattern.compile("^package *\\([a-zA-Z0-9._]*\\).*$");
     }
 
@@ -35,7 +37,7 @@ public class ValidateJavaPackagesTask implements Task {
 
     @Override
     public void run(TaskListener tasklistener, TaskQueue tasks) throws Throwable {
-        List<String> javapaths = project.getResourcesPathsOfType(".java");
+        List<String> javapaths = project.getPathsOfType(".java");
         for (String javapath : javapaths) {
             validateJavaPackage(javapath);
         }

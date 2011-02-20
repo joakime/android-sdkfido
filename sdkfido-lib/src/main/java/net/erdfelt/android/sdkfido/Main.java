@@ -56,7 +56,12 @@ public class Main {
         }
 
         for (String targetName : config.getFetchTargets()) {
-            FetchTarget target = fetcher.getFetchTarget(targetName);
+            FetchTarget target = fetcher.getSourceOrigins().getFetchTarget(targetName);
+            System.out.printf("Requested Target: \"%s\"%n", targetName);
+            if (target == null) {
+                System.out.println("Target Not Found");
+                continue; // skip
+            }
             fetchTarget(fetcher, target);
         }
     }
