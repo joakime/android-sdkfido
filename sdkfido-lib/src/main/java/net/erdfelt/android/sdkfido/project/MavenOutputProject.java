@@ -7,14 +7,16 @@ import java.util.Map;
 
 import net.erdfelt.android.sdkfido.FetchTarget;
 
-public class MavenOutputProject implements OutputProject {
-    private Dir         baseDir;
+public class MavenOutputProject extends AbstractOutputProject implements OutputProject {
     private FetchTarget target;
     private String      groupId;
     private String      artifactId;
 
-    public MavenOutputProject(File outputDir, FetchTarget target) {
-        this.baseDir = new Dir(outputDir);
+    public MavenOutputProject(File projectDir, FetchTarget target) {
+        baseDir = new Dir(projectDir, toBaseDirName(target));
+        sourceDir = baseDir.getSubDir("src/main/java");
+        resourceDir = baseDir.getSubDir("src/main/resources");
+        outputDir = baseDir.getSubDir("target/classes");
         this.target = target;
         this.groupId = "com.android.sdk";
         this.artifactId = "android";
@@ -37,39 +39,9 @@ public class MavenOutputProject implements OutputProject {
     }
 
     @Override
-    public void startSubProject(String projectId) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void copySource(File gitIncludeDir) throws IOException {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public Dir getBaseDir() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Dir getSourceDir() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Dir getResourceDir() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Dir getOutputDir() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

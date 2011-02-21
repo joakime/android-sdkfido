@@ -19,4 +19,8 @@ public interface OutputProject {
     public void init() throws IOException;
 
     public void close() throws IOException;
+
+    public void setEnableAidlCompilation(boolean flag);
+
+    public void setAndroidStub(String apilevel, File stubFile);
 }

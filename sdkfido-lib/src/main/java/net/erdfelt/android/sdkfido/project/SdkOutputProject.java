@@ -6,7 +6,7 @@ import java.io.IOException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
 
-public class SdkOutputProject implements OutputProject {
+public class SdkOutputProject extends AbstractOutputProject implements OutputProject {
 
     public SdkOutputProject(LocalAndroidPlatforms platforms, FetchTarget target) {
         // TODO Auto-generated constructor stub
@@ -22,12 +22,6 @@ public class SdkOutputProject implements OutputProject {
     public void copySource(File gitIncludeDir) throws IOException {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public Dir getBaseDir() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -50,12 +44,6 @@ public class SdkOutputProject implements OutputProject {
 
     @Override
     public void init() throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void close() throws IOException {
         // TODO Auto-generated method stub
 
     }

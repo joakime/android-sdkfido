@@ -1,12 +1,16 @@
 package net.erdfelt.android.sdkfido;
 
+import java.io.File;
 import java.io.IOException;
 
 import net.erdfelt.android.sdkfido.git.GitException;
 import net.erdfelt.android.sdkfido.git.GitFactory;
 import net.erdfelt.android.sdkfido.git.GitMirrors;
 import net.erdfelt.android.sdkfido.git.IGit;
+import net.erdfelt.android.sdkfido.local.AndroidPlatform;
+import net.erdfelt.android.sdkfido.local.JarListing;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
+import net.erdfelt.android.sdkfido.project.AidlCompiler;
 import net.erdfelt.android.sdkfido.project.AntOutputProject;
 import net.erdfelt.android.sdkfido.project.MavenMultimoduleOutputProject;
 import net.erdfelt.android.sdkfido.project.MavenOutputProject;
@@ -36,7 +40,7 @@ public class Fetcher {
 
         GitMirrors mirrors = GitMirrors.load();
         GitFactory.setMirrors(mirrors);
-
+        
         OutputProject project = null;
         switch (config.getOutputType()) {
             case MAVEN_BUILD:
@@ -63,10 +67,18 @@ public class Fetcher {
             tasks.add(new GitSwitchBranchTask(git, target.getBranchname()));
             tasks.add(new ProjectCopySourceTask(git, repo, project));
         }
+        
+        if( (platforms != null) && (platforms.valid())) {
+            AidlCompiler.setAidlBin(platforms.getBin("aidl"));
+            project.setEnableAidlCompilation(true);
 
-        if (target.getApilevel() != null) {
-            // JarListing jarlisting = platform.getAndroidJarListing();
-            tasks.add(new ProjectValidateApiTask(project, target.getApilevel()));
+            if (target.getApilevel() != null) {
+                AndroidPlatform platform = platforms.getPlatform(target.getApilevel());
+                if(platform != null) {
+                    File stubFile = platform.getAndroidJarFile();
+                    project.setAndroidStub(target.getApilevel(), stubFile);
+                }
+            }
         }
 
         tasks.add(new ProjectCloseTask(project));

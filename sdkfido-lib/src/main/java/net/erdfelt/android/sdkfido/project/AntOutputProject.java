@@ -5,26 +5,11 @@ import java.io.IOException;
 
 import net.erdfelt.android.sdkfido.FetchTarget;
 
-public class AntOutputProject implements OutputProject {
-    private Dir baseDir;
-    private Dir srcDir;
+public class AntOutputProject extends AbstractOutputProject implements OutputProject {
 
     public AntOutputProject(File projectsDir, FetchTarget target) {
-        StringBuilder filename = new StringBuilder();
-        filename.append("android-");
-        switch (target.getType()) {
-            case APILEVEL:
-                filename.append("api-");
-                break;
-            case BRANCH:
-            case TAG:
-            case VERSION:
-                filename.append(target.getType().name().toLowerCase()).append("-");
-                break;
-        }
-        filename.append(target.getId());
-        this.baseDir = new Dir(projectsDir, filename);
-        this.srcDir = this.baseDir.getSubDir("src");
+        baseDir = new Dir(projectsDir, toBaseDirName(target));
+        sourceDir = this.baseDir.getSubDir("src");
     }
 
     @Override
@@ -34,8 +19,8 @@ public class AntOutputProject implements OutputProject {
 
     @Override
     public void init() throws IOException {
-        this.baseDir.ensureExists();
-        this.srcDir.ensureExists();
+        baseDir.ensureExists();
+        sourceDir.ensureExists();
     }
 
     @Override
@@ -45,21 +30,9 @@ public class AntOutputProject implements OutputProject {
     }
 
     @Override
-    public void startSubProject(String projectId) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void copySource(File gitIncludeDir) throws IOException {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public Dir getBaseDir() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
