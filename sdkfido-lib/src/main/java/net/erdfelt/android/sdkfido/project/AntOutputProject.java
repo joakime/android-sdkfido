@@ -1,11 +1,12 @@
 package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
-import java.io.IOException;
 
+import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 
 public class AntOutputProject extends AbstractOutputProject implements OutputProject {
+    private Dir sourceDir;
 
     public AntOutputProject(File projectsDir, FetchTarget target) {
         baseDir = new Dir(projectsDir, toBaseDirName(target));
@@ -14,42 +15,24 @@ public class AntOutputProject extends AbstractOutputProject implements OutputPro
 
     @Override
     public String toString() {
-        return String.format("Ant: %s", baseDir.getPath().getName());
+        return String.format("Ant: %s", baseDir.getPath().getAbsolutePath());
     }
 
     @Override
-    public void init() throws IOException {
+    public void init() throws FetchException {
         baseDir.ensureExists();
         sourceDir.ensureExists();
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws FetchException {
         // TODO: compile aidl?
         // TODO: copy & filter ant build.xml
     }
 
     @Override
-    public void copySource(File gitIncludeDir) throws IOException {
+    public void copySource(File gitIncludeDir) throws FetchException {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public Dir getSourceDir() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Dir getResourceDir() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Dir getOutputDir() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

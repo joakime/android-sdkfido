@@ -1,21 +1,18 @@
 package net.erdfelt.android.sdkfido.project;
 
 import java.io.File;
-import java.io.IOException;
 
+import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 
 public abstract class AbstractOutputProject implements OutputProject {
     protected Dir     baseDir;
-    protected Dir     sourceDir;
-    protected Dir     resourceDir;
-    protected Dir     outputDir;
     protected String  androidStubApiLevel;
     protected File    androidStub;
     protected boolean enableAidlCompilation = false;
 
     @Override
-    public void startSubProject(String projectId) throws IOException {
+    public void startSubProject(String projectId) throws FetchException {
         /* ignore */
     }
 
@@ -25,22 +22,7 @@ public abstract class AbstractOutputProject implements OutputProject {
     }
     
     @Override
-    public Dir getOutputDir() {
-        return this.outputDir;
-    }
-    
-    @Override
-    public Dir getResourceDir() {
-        return this.resourceDir;
-    }
-    
-    @Override
-    public Dir getSourceDir() {
-        return this.sourceDir;
-    }
-
-    @Override
-    public void close() throws IOException {
+    public void close() throws FetchException {
         /* ignore */
     }
 
@@ -54,7 +36,7 @@ public abstract class AbstractOutputProject implements OutputProject {
         this.androidStubApiLevel = apilevel;
         this.androidStub = stubFile;
     }
-
+    
     protected StringBuilder toBaseDirName(FetchTarget target) {
         StringBuilder filename = new StringBuilder();
         filename.append("android-");

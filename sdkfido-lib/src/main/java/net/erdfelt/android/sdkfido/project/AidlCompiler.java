@@ -15,38 +15,38 @@ import org.apache.commons.io.FileUtils;
 public class AidlCompiler {
     private static final Logger LOG     = Logger.getLogger(AidlCompiler.class.getName());
     private static File         aidlBin = null;
-    private OutputProject       project;
+    private Dir                 baseDir;
 
-    public AidlCompiler(OutputProject project) {
-        this.project = project;
+    public AidlCompiler(Dir baseDir) {
+        this.baseDir = baseDir;
     }
 
     public static void setAidlBin(File aidlBin) {
         AidlCompiler.aidlBin = aidlBin;
     }
 
-    public void compile() throws IOException {
-        List<String> aidls = this.project.getResourceDir().findFilePaths("^.*\\.aidl$");
-        deleteRedundantAIDL(aidls);
+    public void compile(Dir sourceDir, Dir resourceDir, Dir outputDir) throws IOException {
+        List<String> aidls = resourceDir.findFilePaths("^.*\\.aidl$");
+        deleteRedundantAIDL(aidls, sourceDir, resourceDir);
 
         for (String aidlpath : aidls) {
-            compileAIDL(aidlpath);
+            compileAIDL(aidlpath, sourceDir, resourceDir, outputDir);
         }
     }
 
-    private void compileAIDL(String aidlpath) {
+    private void compileAIDL(String aidlpath, Dir sourceDir, Dir resourceDir, Dir outputDir) {
         List<String> commands = new ArrayList<String>();
         commands.add(AidlCompiler.aidlBin.getAbsolutePath());
-        String relSourceDir = this.project.getBaseDir().getRelativePath(this.project.getSourceDir());
-        String relOutputDir = this.project.getBaseDir().getRelativePath(this.project.getOutputDir());
-        String relAidlPath = this.project.getBaseDir().getRelativePath(this.project.getSourceDir().getFile(aidlpath));
+        String relSourceDir = baseDir.getRelativePath(sourceDir);
+        String relOutputDir = baseDir.getRelativePath(outputDir);
+        String relAidlPath = baseDir.getRelativePath(sourceDir.getFile(aidlpath));
         commands.add("-o" + relSourceDir);
         commands.add("-I" + relOutputDir);
         commands.add(relAidlPath);
 
         try {
             ProcessBuilder pid = new ProcessBuilder(commands);
-            pid.directory(this.project.getBaseDir().getPath());
+            pid.directory(baseDir.getPath());
             pid.redirectErrorStream(true);
             Process process = pid.start();
 
@@ -62,16 +62,16 @@ public class AidlCompiler {
         }
     }
 
-    private void deleteRedundantAIDL(List<String> aidls) throws IOException {
+    private void deleteRedundantAIDL(List<String> aidls, Dir sourceDir, Dir resourceDir) throws IOException {
         LOG.info("Remove redundant aidl files ...");
         int count = 0;
         String javapath;
         File javafile;
         for (String aidlpath : aidls) {
             javapath = aidlpath.replaceFirst("\\.aidl$", ".java");
-            javafile = this.project.getSourceDir().getFile(javapath);
+            javafile = sourceDir.getFile(javapath);
             if (javafile.exists()) {
-                FileUtils.forceDelete(this.project.getResourceDir().getFile(aidlpath));
+                FileUtils.forceDelete(resourceDir.getFile(aidlpath));
                 count++;
             }
         }

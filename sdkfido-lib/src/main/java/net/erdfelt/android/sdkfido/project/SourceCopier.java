@@ -4,22 +4,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Set;
 import java.util.logging.Logger;
 
+import net.erdfelt.android.sdkfido.local.JarListing;
 import net.erdfelt.android.sdkfido.util.PathUtil;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 public class SourceCopier {
-    private static final Logger LOG         = Logger.getLogger(SourceCopier.class.getName());
-    private LinkedList<String>  javalisting = new LinkedList<String>();
-    private OutputProject       project;
+    private static final Logger LOG = Logger.getLogger(SourceCopier.class.getName());
+    private LinkedList<String>  javalisting;
     private FileWriter          logwriter;
     private PrintWriter         out;
     private int                 countCopied;
@@ -27,31 +24,27 @@ public class SourceCopier {
     private int                 countExtras;
     private int                 countResources;
 
-    public SourceCopier(Set<String> javalisting) {
-        this.javalisting.addAll(javalisting);
-    }
-
-    public void setProject(OutputProject project) {
-        this.project = project;
-    }
-
-    public void init() throws IOException {
-        File logfile = project.getBaseDir().getFile("sdkfido.log");
+    public SourceCopier(Dir logDir) throws IOException {
+        File logfile = logDir.getFile("sdkfido.log");
         logwriter = new FileWriter(logfile, false);
         out = new PrintWriter(logwriter);
-
-        // Remove entries that already exist.
-        out.println("Removing previously found java source files (already present in tree)");
-        updateSearchListings();
     }
 
-    private void updateSearchListings() {
+    public void setNarrowSearchTo(JarListing jarlisting) {
+        javalisting = new LinkedList<String>();
+        javalisting.addAll(jarlisting.getJavaSourceListing());
+    }
+
+    public void identifyCopiedFiles(Dir sourceDir) throws IOException {
+        if (javalisting == null) {
+            return; // nothing to do here
+        }
         File searchFile;
         String javafilename;
         ListIterator<String> iterlisting = javalisting.listIterator();
         while (iterlisting.hasNext()) {
             javafilename = iterlisting.next();
-            searchFile = project.getSourceDir().getFile(javafilename);
+            searchFile = sourceDir.getFile(javafilename);
             if (searchFile.exists()) {
                 iterlisting.remove();
                 out.println("[FOUND] " + javafilename);
@@ -59,26 +52,27 @@ public class SourceCopier {
         }
     }
 
-    public void copyTree(File gitDir, String include) throws IOException {
-        File searchDir = new File(gitDir, toOS(include));
+    public void copyTree(File searchDir, Dir sourceDir, Dir resourceDir) throws IOException {
         if (searchDir.exists()) {
             log("Copying Tree: " + searchDir);
-            copyDirectory(searchDir);
-            updateSearchListings();
+            copyDirectory(searchDir, sourceDir, resourceDir);
+            identifyCopiedFiles(sourceDir);
         }
     }
 
-    public void copyDirectory(File basedir) throws IOException {
-        recurseDirCopy(basedir, basedir);
+    private void copyDirectory(File basedir, Dir sourceDir, Dir resourceDir) throws IOException {
+        System.out.printf("Copying Dir: %s%n[", basedir);
+        recurseDirCopy(basedir, basedir, sourceDir, resourceDir);
+        System.out.println("]");
     }
 
-    public void recurseDirCopy(File basedir, File dir) throws IOException {
+    private void recurseDirCopy(File basedir, File dir, Dir sourceDir, Dir resourceDir) throws IOException {
         String name, relpath;
-        LOG.info("Recurse Copy: " + dir);
+        System.out.print(".");
 
         for (File path : dir.listFiles()) {
             if (path.isDirectory()) {
-                recurseDirCopy(basedir, path);
+                recurseDirCopy(basedir, path, sourceDir, resourceDir);
             } else if (path.isFile()) {
                 relpath = PathUtil.toRelativePath(basedir, path);
                 name = path.getName();
@@ -89,10 +83,10 @@ public class SourceCopier {
                     } else {
                         countExtras++;
                     }
-                    // FileUtils.copyFile(path, project.getSrcJava(relpath));
+                    FileUtils.copyFile(path, sourceDir.getFile(relpath));
                 } else {
                     countResources++;
-                    // FileUtils.copyFile(path, project.getSrcResource(relpath));
+                    FileUtils.copyFile(path, resourceDir.getFile(relpath));
                 }
             }
         }
@@ -113,10 +107,6 @@ public class SourceCopier {
         LOG.info(msg);
         out.println(msg);
         out.flush();
-    }
-
-    private String toOS(String path) {
-        return FilenameUtils.separatorsToSystem(path);
     }
 
     public void close() {

@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import net.erdfelt.android.sdkfido.FetchException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -164,9 +166,13 @@ public class LocalAndroidPlatforms {
     }
 
     public AndroidPlatform getPlatform(String id) throws AndroidPlatformNotFoundException {
-        AndroidPlatform platform = platforms.get(id);
+        String platformId = id;
+        if (StringUtils.isNumeric(id)) {
+            platformId = "android-" + id;
+        }
+        AndroidPlatform platform = platforms.get(platformId);
         if (platform == null) {
-            throw new AndroidPlatformNotFoundException(id);
+            throw new AndroidPlatformNotFoundException(platformId);
         }
         return platform;
     }
@@ -186,6 +192,7 @@ public class LocalAndroidPlatforms {
         }
 
         AndroidPlatform platform = new AndroidPlatform();
+        platform.setDir(subdir);
         platform.setAndroidJarFile(androidJar);
         platform.setId(subdir.getName());
 
@@ -269,7 +276,7 @@ public class LocalAndroidPlatforms {
         return this.homeDir;
     }
 
-    public File getBin(String binname) throws FileNotFoundException {
+    public File getBin(String binname) throws FetchException {
         String paths[] = { "tools", "platform-tools" };
 
         String binosname = binname;
@@ -287,10 +294,13 @@ public class LocalAndroidPlatforms {
                 return bin;
             }
         }
-        throw new FileNotFoundException("android binary: " + binname);
+        throw new FetchException("Android Binary Not Found: " + binname);
     }
 
     public boolean hasApiLevel(String apilevel) {
+        if (StringUtils.isBlank(apilevel)) {
+            return false; // never has an undefined apilevel
+        }
         for (AndroidPlatform platform : platforms.values()) {
             if (StringUtils.equals(String.valueOf(platform.getApiLevel()), apilevel)) {
                 return true;

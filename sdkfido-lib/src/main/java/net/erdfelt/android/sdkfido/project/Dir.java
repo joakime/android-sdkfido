@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.util.PathUtil;
 
 import org.apache.commons.io.FileUtils;
@@ -43,20 +44,27 @@ public class Dir {
         return new Dir(new File(this.basedir, FilenameUtils.separatorsToSystem(path)));
     }
 
-    public void ensureEmpty() throws IOException {
-        if (basedir.exists()) {
-            FileUtils.cleanDirectory(basedir);
-        } else {
-            FileUtils.forceMkdir(basedir);
+    public void ensureEmpty() throws FetchException {
+        try {
+            if (basedir.exists()) {
+                FileUtils.cleanDirectory(basedir);
+            } else {
+                FileUtils.forceMkdir(basedir);
+            }
+        } catch (IOException e) {
+            throw new FetchException("Unable to ensure directory is empty: " + basedir, e);
         }
     }
 
-    public void ensureExists() throws IOException {
+    public void ensureExists() throws FetchException {
         if (basedir.exists()) {
             return;
         }
-
-        FileUtils.forceMkdir(basedir);
+        try {
+            FileUtils.forceMkdir(basedir);
+        } catch (IOException e) {
+            throw new FetchException("Unable to ensure directory exists: " + basedir, e);
+        }
     }
 
     public List<String> findFilePaths(String filenameRegex) {
