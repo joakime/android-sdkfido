@@ -6,17 +6,23 @@
     <antcall target="build-javadoc-jar"/>
   </target>
 
-  <target name="build-source-jar">
+  <property name="android-target-id" value="@TARGETID@" />
+	
+  <target name="initdirs">
+    <mkdir dir="${basedir}/target"/>
+  </target>
+
+  <target name="build-source-jar" depends="initdirs">
     <echo>-----------------------------------------------------</echo>
     <echo> Building source jar</echo>
     <echo></echo>
 
-    <jar basedir="${basedir}/src/main/java"
-         destfile="${basedir}/target/android-source.jar"
+    <jar basedir="${basedir}/src"
+         destfile="${basedir}/target/android-${android-target-id}-source.jar"
          includes="**/*.java" />
   </target>
 
-  <target name="build-javadoc-jar">
+  <target name="build-javadoc-jar" depends="initdirs">
     <echo>-----------------------------------------------------</echo>
     <echo> Building javadoc jar</echo>
     <echo></echo>

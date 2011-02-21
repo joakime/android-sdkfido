@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.local.JarListing;
 import net.erdfelt.android.sdkfido.util.PathUtil;
@@ -15,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 public class SourceCopier {
-    private static final Logger LOG = Logger.getLogger(SourceCopier.class.getName());
     private LinkedList<String>  javalisting;
     private FileWriter          logwriter;
     private PrintWriter         out;
@@ -54,7 +52,6 @@ public class SourceCopier {
 
     public void copyTree(File searchDir, Dir sourceDir, Dir resourceDir) throws IOException {
         if (searchDir.exists()) {
-            log("Copying Tree: " + searchDir);
             copyDirectory(searchDir, sourceDir, resourceDir);
             identifyCopiedFiles(sourceDir);
         }
@@ -101,12 +98,6 @@ public class SourceCopier {
         msg.append(", resources ").append(countResources);
         msg.append("] - only ").append(javalisting.size()).append(" left to find!");
         return msg.toString();
-    }
-
-    private void log(String msg) {
-        LOG.info(msg);
-        out.println(msg);
-        out.flush();
     }
 
     public void close() {

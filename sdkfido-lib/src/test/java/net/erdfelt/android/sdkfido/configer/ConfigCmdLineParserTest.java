@@ -131,19 +131,19 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT_BUILD));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
 
         File otherWork = testingdir.getFile("work");
 
         StringWriter capture = new StringWriter();
         ConfigCmdLineParser parser = new ConfigCmdLineParser(this, config);
         parser.setOut(capture);
-        String[] args = { "--dryRun", "true", "--workDir", otherWork.getAbsolutePath(), "--outputType", "SDK_SOURCE" };
+        String[] args = { "--dryRun", "true", "--workDir", otherWork.getAbsolutePath(), "--outputType", "SDK" };
         parser.parse(args);
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(true));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(otherWork));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.SDK_SOURCE));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.SDK));
     }
 
     @Test
@@ -178,7 +178,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT_BUILD));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
 
         File confFile = testingdir.getFile("config.properties");
 
@@ -194,7 +194,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("props[dryRun]", props.getProperty("dryRun"), is("false"));
         Assert.assertThat("props[workDir]", props.getProperty("workDir"), is(expectedDir.getAbsolutePath()));
-        Assert.assertThat("props[outputType]", props.getProperty("outputType"), is("ANT_BUILD"));
+        Assert.assertThat("props[outputType]", props.getProperty("outputType"), is("ANT"));
     }
 
     @Test
@@ -205,7 +205,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT_BUILD));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
 
         File confFile = MavenTestingUtils.getTestResourceFile("config2.properties");
 
@@ -221,7 +221,7 @@ public class ConfigCmdLineParserTest {
         Assert.assertThat("config.maven.groupId", config.getMaven().getGroupId(), is("com.android.sdk.testee"));
         Assert.assertThat("config.maven.artifactId", config.getMaven().getArtifactId(), is("artifact-test"));
         Assert.assertThat("config.maven.includeStubJar", config.getMaven().isIncludeStubJar(), is(false));
-        Assert.assertThat("config.outputType", config.getOutputType(), is(OutputProjectType.MAVEN_BUILD_MULTI));
+        Assert.assertThat("config.outputType", config.getOutputType(), is(OutputProjectType.MAVEN_MULTI));
     }
 
     private Properties loadProps(File propfile) throws IOException {

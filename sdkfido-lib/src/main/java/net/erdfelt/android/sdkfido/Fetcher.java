@@ -43,16 +43,16 @@ public class Fetcher {
         
         OutputProject project = null;
         switch (config.getOutputType()) {
-            case MAVEN_BUILD:
+            case MAVEN:
                 project = new MavenOutputProject(config.getOutputDir(), target);
                 break;
-            case MAVEN_BUILD_MULTI:
+            case MAVEN_MULTI:
                 project = new MavenMultimoduleOutputProject(config.getOutputDir(), target);
                 break;
-            case SDK_SOURCE:
+            case SDK:
                 if(StringUtils.isBlank(target.getApilevel())) {
                     StringBuilder err = new StringBuilder();
-                    err.append("Cannot use --outputType ").append(OutputProjectType.SDK_SOURCE.name());
+                    err.append("Cannot use --outputType ").append(OutputProjectType.SDK.name());
                     err.append(" with the ").append(target).append(" target, its API Level is not known.");
                     err.append("  Either choose a different --outputType or use a different target.");
                     throw new FetchException(err.toString());
@@ -60,7 +60,7 @@ public class Fetcher {
                 AndroidPlatform platform = platforms.getPlatform(target.getApilevel());
                 if(platform == null) {
                     StringBuilder err = new StringBuilder();
-                    err.append("Cannot use --outputType ").append(OutputProjectType.SDK_SOURCE.name());
+                    err.append("Cannot use --outputType ").append(OutputProjectType.SDK.name());
                     err.append(".  You do not appear to have a platforms/android-").append(target.getApilevel());
                     err.append(" downloaded in your local Android SDK directory.");
                     err.append("  Use the Android SDK and AVD Manager to download the ");
@@ -69,7 +69,7 @@ public class Fetcher {
                 }
                 project = new SdkOutputProject(platform);
                 break;
-            case ANT_BUILD:
+            case ANT:
             default:
                 project = new AntOutputProject(config.getOutputDir(), target);
                 break;

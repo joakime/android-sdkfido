@@ -18,7 +18,7 @@ public class FetcherConfig {
     public static class MavenConfig {
         @ConfigOption(description = "Maven Group ID")
         private String  groupId        = "com.android.sdk";
-        @ConfigOption(description = "Maven Artifact ID (used as prefix in MAVEN_BUILD_MULTI ProjectType)")
+        @ConfigOption(description = "Maven Artifact ID (used as prefix in MAVEN_MULTI ProjectType)")
         private String  artifactId     = "android";
         @ConfigOption(description = "Include SDK android.jar (stub) as attached artifact in build")
         private boolean includeStubJar = true;
@@ -57,9 +57,9 @@ public class FetcherConfig {
     private File                platformsDir;
 
     @ConfigOption(description = "Output Project Type", type = "ProjectType")
-    private OutputProjectType   outputType = OutputProjectType.ANT_BUILD;
+    private OutputProjectType   outputType = OutputProjectType.ANT;
 
-    @ConfigOption(description = "Output Directory (ignored for SDK_SOURCE ProjectType)", type = "Dir")
+    @ConfigOption(description = "Output Directory (ignored for SDK ProjectType)", type = "Dir")
     private File                outputDir;
 
     @ConfigOption(description = "Maven Configurables", suboption = true)

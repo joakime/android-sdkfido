@@ -54,6 +54,8 @@ public class SdkOutputProject extends AbstractOutputProject implements OutputPro
 
     @Override
     public void close() throws FetchException {
+        copier.close();
+        
         try {
             JavaPathValidator validator = new JavaPathValidator();
             int count = validator.validateSourceTree(sourceDir);
