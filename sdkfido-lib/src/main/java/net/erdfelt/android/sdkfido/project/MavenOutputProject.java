@@ -46,7 +46,14 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
                     e);
         }
 
-        // TODO: AIDL Compile?
+        // AIDL Compile
+        outputDir.ensureEmpty();
+        AidlCompiler aidl = new AidlCompiler(baseDir);
+        try {
+            aidl.compile(sourceDir, resourceDir, outputDir);
+        } catch (IOException e) {
+            throw new FetchException("AIDL Compilation Failure: " + e.getMessage(), e);
+        }
 
         // Create build.xml
         Map<String, String> props = new HashMap<String, String>();
