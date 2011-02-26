@@ -44,11 +44,11 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
         this.buildgen = buildgen;
     }
 
-    public XmlBuildGen getBuildgen() {
+    public XmlBuildGen getBuildGen() {
         return buildgen;
     }
 
-    public void setBuildgen(XmlBuildGen buildgen) {
+    public void setBuildGen(XmlBuildGen buildgen) {
         this.buildgen = buildgen;
     }
 

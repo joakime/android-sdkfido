@@ -7,10 +7,10 @@
             <id>exec-aapt</id>
             <phase>generate-sources</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${android-home}/android-${android-api-level}/tools/aapt</executable>
+              <executable>${env.ANDROID_HOME}/platforms/android-@APILEVEL@/tools/aapt</executable>
               <arguments>
                 <argument>package</argument>
                 <argument>-J</argument>
@@ -21,9 +21,9 @@
                 <argument>-S</argument>
                 <argument>${project.basedir}/src/main/resources/res</argument>
                 <argument>-I</argument>
-                <argument>${android-home}/android-${android-api-level}/android.jar</argument>
+                <argument>${env.ANDROID_HOME}/platforms/android-@APILEVEL@/android.jar</argument>
                 <argument>-F</argument>
-                <argument>${project.build.directory}/${artifactId}-resources.apk</argument>
+                <argument>${project.build.directory}/${project.artifactId}-resources.apk</argument>
               </arguments>
             </configuration>
           </execution>

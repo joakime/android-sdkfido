@@ -19,6 +19,7 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
     private static final String             STUB_MODULE_ID = "android-stub";
     private Map<String, MavenOutputProject> modules;
     private String                          activeModule   = "_unset_";
+    private String                          apilevel;
     private String                          parentArtifactId;
     private String                          parentVersion;
     private MavenMultiParentGen             parentgen;
@@ -31,9 +32,10 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
         this.modules = new HashMap<String, MavenOutputProject>();
         this.parentArtifactId = MavenConstants.DEFAULT_ARTIFACTID;
         this.parentVersion = target.getVersion().toString();
+        this.apilevel = target.getApilevel();
 
-        parentgen = new MavenMultiParentGen(parentArtifactId, parentVersion, target.getApilevel());
-        stubgen = new MavenMultiStubGen(parentArtifactId, STUB_MODULE_ID, parentVersion, target.getApilevel());
+        parentgen = new MavenMultiParentGen(parentArtifactId, parentVersion, apilevel);
+        stubgen = new MavenMultiStubGen(parentArtifactId, STUB_MODULE_ID, parentVersion, apilevel);
     }
 
     @Override
@@ -42,7 +44,7 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
         if (!modules.containsKey(this.activeModule)) {
             // Create new output module.
             File moduleDir = baseDir.getFile(projectId);
-            MavenMultiSubGen subgen = new MavenMultiSubGen(parentArtifactId, projectId, parentVersion);
+            MavenMultiSubGen subgen = new MavenMultiSubGen(parentArtifactId, projectId, parentVersion, apilevel);
             MavenOutputProject module = new MavenOutputProject(moduleDir, subgen);
             module.init();
             module.setCopierNarrowJar(stublisting);
@@ -84,6 +86,13 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
         // Close all modules
         for (String moduleId : modules.keySet()) {
             MavenOutputProject module = modules.get(moduleId);
+
+            MavenMultiSubGen subgen = (MavenMultiSubGen) module.getBuildGen();
+
+            // AAPT? Test for src/test/resources/AndroidManifest.xml
+            File androidManifestXml = module.getBaseDir().getFile("src/main/resources/AndroidManifest.xml");
+            subgen.setAndroidManifest(androidManifestXml);
+
             module.close();
             parentgen.addModule(moduleId);
         }
