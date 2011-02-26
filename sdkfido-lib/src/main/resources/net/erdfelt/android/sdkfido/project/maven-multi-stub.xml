@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>@GROUPID@</groupId>
+    <artifactId>@PARENT_ARTIFACTID@</artifactId>
+    <version>@VERSION@</version>
+  </parent>
+  <groupId>@GROUPID@</groupId>
+  <artifactId>@ARTIFACTID@</artifactId>
+  <version>@APILEVEL@</version>
+  <packaging>pom</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>attach-stub</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.basedir}/android-stub.jar</file>
+                  <type>jar</type>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

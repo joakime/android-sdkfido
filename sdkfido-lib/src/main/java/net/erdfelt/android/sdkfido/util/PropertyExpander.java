@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class PropertyExpander {
     private Map<String, String> props;
-    Pattern                     pat = Pattern.compile("(@([A-Z][A-Z0-9]*)@)");
+    Pattern                     pat = Pattern.compile("(@([A-Z][A-Z0-9_]*)@)");
 
     public PropertyExpander(Map<String, String> props) {
         this.props = props;

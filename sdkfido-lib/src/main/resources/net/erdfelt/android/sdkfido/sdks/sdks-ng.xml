@@ -41,18 +41,19 @@
   
   <repos>
     <repo url="git://android.git.kernel.org/platform/frameworks/base.git">
-      <basedir path="core/java" project="core" />
-      <basedir path="graphics/java" project="graphics" />
-      <basedir path="sax/java" project="sax" />
-      <basedir path="opengl/java" project="opengl" />
-      <basedir path="media/java" project="media" />
-      <basedir path="im/java" project="im" />
-      <basedir path="location/java" project="location" />
-      <basedir path="services/java" project="services" />
-      <basedir path="awt" project="harmony" />
-      <basedir path="wifi/java" project="wifi" />
-      <basedir path="telephony/java" project="telephony" />
-      <basedir path="test-runner/src" project="test" />
+      <basedir path="core/java" project="base" />
+      <basedir path="core/res" project="base" />
+      <basedir path="graphics/java" project="base" />
+      <basedir path="sax/java" project="base" />
+      <basedir path="opengl/java" project="base" />
+      <basedir path="media/java" project="base" />
+      <basedir path="im/java" project="base" />
+      <basedir path="location/java" project="base" />
+      <basedir path="services/java" project="base" />
+      <basedir path="awt" project="base" />
+      <basedir path="wifi/java" project="base" />
+      <basedir path="telephony/java" project="base" />
+      <basedir path="test-runner/src" project="base" />
     </repo>
     <repo url="git://android.git.kernel.org/platform/external/apache-http.git">
       <basedir path="src" project="apache-http" />

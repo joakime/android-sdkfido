@@ -23,13 +23,13 @@ public class SourceCopier {
     private int                 countResources;
 
     public SourceCopier(Dir logDir) throws IOException {
+        this.javalisting = new LinkedList<String>();
         File logfile = logDir.getFile("sdkfido.log");
-        logwriter = new FileWriter(logfile, false);
-        out = new PrintWriter(logwriter);
+        this.logwriter = new FileWriter(logfile, false);
+        this.out = new PrintWriter(logwriter);
     }
 
     public void setNarrowSearchTo(JarListing jarlisting) {
-        javalisting = new LinkedList<String>();
         javalisting.addAll(jarlisting.getJavaSourceListing());
     }
 

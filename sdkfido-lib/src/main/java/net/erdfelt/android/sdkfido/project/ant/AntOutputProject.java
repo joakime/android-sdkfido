@@ -1,14 +1,18 @@
-package net.erdfelt.android.sdkfido.project;
+package net.erdfelt.android.sdkfido.project.ant;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 import net.erdfelt.android.sdkfido.local.JarListing;
+import net.erdfelt.android.sdkfido.project.AbstractOutputProject;
+import net.erdfelt.android.sdkfido.project.Dir;
+import net.erdfelt.android.sdkfido.project.JavaPathValidator;
+import net.erdfelt.android.sdkfido.project.OutputProject;
+import net.erdfelt.android.sdkfido.project.SourceCopier;
+import net.erdfelt.android.sdkfido.project.XmlBuildGen;
 
 import org.apache.commons.io.FileUtils;
 
@@ -16,12 +20,12 @@ public class AntOutputProject extends AbstractOutputProject implements OutputPro
     private static final Logger LOG = Logger.getLogger(AntOutputProject.class.getName());
     private Dir                 sourceDir;
     private SourceCopier        copier;
-    private FetchTarget         target;
+    private XmlBuildGen         xmlgen;
 
     public AntOutputProject(File projectsDir, FetchTarget target) {
         this.baseDir = new Dir(projectsDir, toBaseDirName(target));
         this.sourceDir = this.baseDir.getSubDir("src");
-        this.target = target;
+        this.xmlgen = new AntPackageGen(target);
     }
 
     @Override
@@ -41,9 +45,7 @@ public class AntOutputProject extends AbstractOutputProject implements OutputPro
         // TODO: AIDL Compile?
 
         // Create build.xml
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("TARGETID", target.getType().name().toLowerCase() + "-" + target.getId());
-        FilteredFileUtil.copyWithExpansion("ant-build.xml", baseDir.getFile("build.xml"), props);
+        xmlgen.generate(baseDir.getFile("build.xml"));
     }
 
     @Override

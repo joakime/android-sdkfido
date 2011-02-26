@@ -1,35 +1,61 @@
-package net.erdfelt.android.sdkfido.project;
+package net.erdfelt.android.sdkfido.project.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 import net.erdfelt.android.sdkfido.local.JarListing;
+import net.erdfelt.android.sdkfido.project.AbstractOutputProject;
+import net.erdfelt.android.sdkfido.project.AidlCompiler;
+import net.erdfelt.android.sdkfido.project.Dir;
+import net.erdfelt.android.sdkfido.project.JavaPathValidator;
+import net.erdfelt.android.sdkfido.project.OutputProject;
+import net.erdfelt.android.sdkfido.project.SourceCopier;
+import net.erdfelt.android.sdkfido.project.XmlBuildGen;
 
 import org.apache.commons.io.FileUtils;
 
 public class MavenOutputProject extends AbstractOutputProject implements OutputProject {
-    private static final Logger LOG = Logger.getLogger(MavenOutputProject.class.getName());
+    public static final String  GROUPID    = "com.android.sdk";
+    public static final String  ARTIFACTID = "android";
+
+    private static final Logger LOG        = Logger.getLogger(MavenOutputProject.class.getName());
     private Dir                 sourceDir;
     private Dir                 resourceDir;
     private Dir                 outputDir;
     private SourceCopier        copier;
-    private FetchTarget         target;
-    private String              groupId;
-    private String              artifactId;
+    private XmlBuildGen         buildgen;
 
     public MavenOutputProject(File projectDir, FetchTarget target) {
         baseDir = new Dir(projectDir, toBaseDirName(target));
         sourceDir = baseDir.getSubDir("src/main/java");
         resourceDir = baseDir.getSubDir("src/main/resources");
         outputDir = baseDir.getSubDir("target/classes");
-        this.target = target;
-        this.groupId = "com.android.sdk";
-        this.artifactId = "android";
+        buildgen = new MavenPackageGen(target);
+    }
+
+    public MavenOutputProject(File moduleDir, XmlBuildGen buildgen) {
+        this.baseDir = new Dir(moduleDir);
+        this.sourceDir = baseDir.getSubDir("src/main/java");
+        this.resourceDir = baseDir.getSubDir("src/main/resources");
+        this.outputDir = baseDir.getSubDir("target/classes");
+        this.buildgen = buildgen;
+    }
+
+    public XmlBuildGen getBuildgen() {
+        return buildgen;
+    }
+
+    public void setBuildgen(XmlBuildGen buildgen) {
+        this.buildgen = buildgen;
+    }
+
+    public void setCopierNarrowJar(JarListing jarlisting) {
+        if (jarlisting != null) {
+            this.copier.setNarrowSearchTo(jarlisting);
+        }
     }
 
     @Override
@@ -47,22 +73,18 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
         }
 
         // AIDL Compile
-        outputDir.ensureEmpty();
-        AidlCompiler aidl = new AidlCompiler(baseDir);
-        try {
-            aidl.compile(sourceDir, resourceDir, outputDir);
-        } catch (IOException e) {
-            throw new FetchException("AIDL Compilation Failure: " + e.getMessage(), e);
+        if (enableAidlCompilation) {
+            outputDir.ensureEmpty();
+            AidlCompiler aidl = new AidlCompiler(baseDir);
+            try {
+                aidl.compile(sourceDir, resourceDir, outputDir);
+            } catch (IOException e) {
+                throw new FetchException("AIDL Compilation Failure: " + e.getMessage(), e);
+            }
         }
 
-        // Create build.xml
-        Map<String, String> props = new HashMap<String, String>();
-        props.put("GROUPID", this.groupId);
-        props.put("ARTIFACTID", this.artifactId);
-        props.put("VERSION", target.getVersion().toString());
-
-        File pomFile = this.baseDir.getFile("pom.xml");
-        FilteredFileUtil.copyWithExpansion("maven-pom.xml", pomFile, props);
+        // Create pom.xml
+        buildgen.generate(baseDir.getFile("pom.xml"));
     }
 
     @Override
@@ -72,14 +94,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
         } catch (IOException e) {
             throw new FetchException("Unable to copy source tree: " + gitIncludeDir, e);
         }
-    }
-
-    public String getArtifactId() {
-        return artifactId;
-    }
-
-    public String getGroupId() {
-        return groupId;
     }
 
     @Override
@@ -105,14 +119,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
                                 + androidStub, e);
             }
         }
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
     }
 
     @Override

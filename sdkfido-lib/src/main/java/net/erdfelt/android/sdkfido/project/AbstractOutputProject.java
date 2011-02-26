@@ -37,7 +37,7 @@ public abstract class AbstractOutputProject implements OutputProject {
         this.androidStub = stubFile;
     }
     
-    protected StringBuilder toBaseDirName(FetchTarget target) {
+    protected static StringBuilder toBaseDirName(FetchTarget target) {
         StringBuilder filename = new StringBuilder();
         filename.append("android-");
         switch (target.getType()) {
