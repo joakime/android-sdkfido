@@ -11,9 +11,8 @@
   <description>Fetch and package up the source for the Android jars suitable for use with various debugging utilities</description>
   <inceptionYear>2010</inceptionYear>
   <modules>
-    <module>sdkfido-lib</module>
+    <module>sdkfido</module>
     <module>sdkfido-ui</module>
-    <module>sdkfido-distribution</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
