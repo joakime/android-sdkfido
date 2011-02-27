@@ -86,7 +86,7 @@ public class Main {
             System.out.printf("  > SDKPlatform : %s%n", sdkAvailability);
             fetchTarget(fetcher, target);
         }
-        System.out.printf("All Fetch Tasks Complete.");
+        System.out.println("All Fetch Tasks Complete.");
     }
 
     private void fetchTarget(Fetcher fetcher, FetchTarget target) {
