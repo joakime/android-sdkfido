@@ -13,6 +13,57 @@
   <packaging>jar</packaging>
   <description>Fetch and package up the source for the Android jars suitable for use with various debugging utilities</description>
   <inceptionYear>2010</inceptionYear>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
+              </descriptors>
+              <tarLogFileMode>gnu</tarLogFileMode>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.erdfelt.sdkfido.Main</mainClass>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib</classpathPrefix>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-lib-dir</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>
@@ -54,24 +105,24 @@
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
     </dependency>
-      <dependency>
-        <groupId>jaxen</groupId>
-        <artifactId>jaxen</artifactId>
-        <version>1.1</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>jdom</artifactId>
-            <groupId>jdom</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>xom</artifactId>
-            <groupId>xom</groupId>
-          </exclusion>
-          <exclusion>
-            <artifactId>xercesImpl</artifactId>
-            <groupId>xerces</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>jdom</artifactId>
+          <groupId>jdom</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xom</artifactId>
+          <groupId>xom</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
   </dependencies>
 </project>
