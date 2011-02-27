@@ -57,7 +57,7 @@ public class FetcherConfig {
     private File                platformsDir;
 
     @ConfigOption(description = "Output Project Type", type = "ProjectType")
-    private OutputProjectType   outputType = OutputProjectType.ANT;
+    private OutputProjectType   outputType = OutputProjectType.SDK;
 
     @ConfigOption(description = "Output Directory (ignored for SDK ProjectType)", type = "Dir")
     private File                outputDir;
