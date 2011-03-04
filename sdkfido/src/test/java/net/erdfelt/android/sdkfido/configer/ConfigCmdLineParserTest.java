@@ -131,7 +131,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.SDK));
 
         File otherWork = testingdir.getFile("work");
 
@@ -178,7 +178,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.SDK));
 
         File confFile = testingdir.getFile("config.properties");
 
@@ -194,7 +194,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("props[dryRun]", props.getProperty("dryRun"), is("false"));
         Assert.assertThat("props[workDir]", props.getProperty("workDir"), is(expectedDir.getAbsolutePath()));
-        Assert.assertThat("props[outputType]", props.getProperty("outputType"), is("ANT"));
+        Assert.assertThat("props[outputType]", props.getProperty("outputType"), is("SDK"));
     }
 
     @Test
@@ -205,7 +205,7 @@ public class ConfigCmdLineParserTest {
 
         Assert.assertThat("Config.dryRun", config.isDryRun(), is(false));
         Assert.assertThat("Config.workDir", config.getWorkDir(), is(expectedDir));
-        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.ANT));
+        Assert.assertThat("Config.outputType", config.getOutputType(), is(OutputProjectType.SDK));
 
         File confFile = MavenTestingUtils.getTestResourceFile("config2.properties");
 
