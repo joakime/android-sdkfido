@@ -13,6 +13,7 @@
   <modules>
     <module>sdkfido</module>
     <module>sdkfido-ui</module>
+    <module>sdkfido-maven-plugin</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
