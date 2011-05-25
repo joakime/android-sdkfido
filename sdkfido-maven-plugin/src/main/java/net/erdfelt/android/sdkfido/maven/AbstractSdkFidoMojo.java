@@ -1,6 +1,7 @@
 package net.erdfelt.android.sdkfido.maven;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -51,5 +52,39 @@ public abstract class AbstractSdkFidoMojo extends AbstractMojo {
 
     protected String OS(String rawpath) {
         return rawpath.replaceAll("[/\\\\]", File.separator);
+    }
+
+    protected String toString(List<String> strs) {
+        if (strs == null) {
+            return "<null>";
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        boolean delim = false;
+        for (String str : strs) {
+            if (delim) {
+                buf.append(", ");
+            }
+            buf.append('"').append(str).append('"');
+        }
+        buf.append(']');
+        return buf.toString();
+    }
+
+    protected String toString(String[] strs) {
+        if (strs == null) {
+            return "<null>";
+        }
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        boolean delim = false;
+        for (String str : strs) {
+            if (delim) {
+                buf.append(", ");
+            }
+            buf.append('"').append(str).append('"');
+        }
+        buf.append(']');
+        return buf.toString();
     }
 }

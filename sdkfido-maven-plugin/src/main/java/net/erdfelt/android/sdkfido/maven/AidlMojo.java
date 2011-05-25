@@ -97,20 +97,4 @@ public class AidlMojo extends AbstractSdkFidoMojo {
 
         execCommandline(cli, "AIDL");
     }
-
-    private String toString(String[] strs) {
-        if (strs == null) {
-            return "<null>";
-        }
-        StringBuilder buf = new StringBuilder();
-        buf.append('[');
-        boolean delim = false;
-        for (String str : strs) {
-            if (delim)
-                buf.append(", ");
-            buf.append('"').append(str).append('"');
-        }
-        buf.append(']');
-        return buf.toString();
-    }
 }
