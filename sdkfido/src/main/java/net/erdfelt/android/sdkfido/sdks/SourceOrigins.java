@@ -1,6 +1,8 @@
 package net.erdfelt.android.sdkfido.sdks;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +20,15 @@ import org.apache.commons.lang.StringUtils;
 @ObjectCreate(pattern = "android-source")
 public class SourceOrigins {
     @SetProperty(pattern = "android-source", attributeName = "spec-version")
-    private int                       specVersion;
+    private int                          specVersion;
 
-    private TreeSet<ApiLevel>         apilevels = new TreeSet<ApiLevel>();
-    private Set<Tag>                  tags      = new TreeSet<Tag>();
-    private Set<Branch>               branches  = new TreeSet<Branch>();
-    private Set<Repo>                 repos     = new TreeSet<Repo>();
-    private Map<Version, VersionTree> versions  = new TreeMap<Version, VersionTree>(VersionComparator.INSTANCE);
-    private List<FetchTarget>         targets   = new ArrayList<FetchTarget>();
+    private TreeSet<ApiLevel>            apilevels = new TreeSet<ApiLevel>();
+    private Set<Tag>                     tags      = new TreeSet<Tag>();
+    private Set<Branch>                  branches  = new TreeSet<Branch>();
+    private Set<Repo>                    repos     = new TreeSet<Repo>();
+    private Map<Version, VersionTree>    versions  = new TreeMap<Version, VersionTree>(VersionComparator.INSTANCE);
+    private List<FetchTarget>            targets   = new ArrayList<FetchTarget>();
+    private Map<String, ProjectTemplate> projects  = new HashMap<String, ProjectTemplate>();
 
     public Map<Version, VersionTree> getVersions() {
         return versions;
@@ -47,9 +50,18 @@ public class SourceOrigins {
         return apilevels;
     }
 
+    public Collection<ProjectTemplate> getProjects() {
+        return projects.values();
+    }
+
     public void setApilevels(Set<ApiLevel> apis) {
         this.apilevels.clear();
         this.apilevels.addAll(apis);
+    }
+
+    @SetNext
+    public void addProject(ProjectTemplate project) {
+        this.projects.put(project.getId(), project);
     }
 
     @SetNext
@@ -350,5 +362,9 @@ public class SourceOrigins {
             }
         }
         return null;
+    }
+
+    public ProjectTemplate getProjectTemplate(String id) {
+        return projects.get(id);
     }
 }

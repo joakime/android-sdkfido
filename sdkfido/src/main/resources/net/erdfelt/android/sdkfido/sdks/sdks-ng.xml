@@ -50,10 +50,10 @@
       <basedir path="im/java" project="base" />
       <basedir path="location/java" project="base" />
       <basedir path="services/java" project="base" />
-      <basedir path="awt" project="base-awt" />
+      <basedir path="awt" project="base" />
       <basedir path="wifi/java" project="base" />
       <basedir path="telephony/java" project="base" />
-      <basedir path="test-runner/src" project="base-tests" />
+      <basedir path="test-runner/src" project="base" />
     </repo>
     <repo url="git://android.git.kernel.org/platform/external/apache-http.git">
       <basedir path="src" project="apache-http" />
@@ -89,17 +89,11 @@
   </repos>
   
   <projects>
-    <project id="base" type="android">
+    <project id="base" template="maven-multi-android.xml">
       <dependency ref="dalvik" />
       <dependency ref="apache-http" />
     </project>
-    <project id="base-tests" type="jar">
-      <dependency ref="dalvik" />
-    </project>
-    <project id="base-awt" type="jar">
-      <dependency ref="dalvik" />
-    </project>
-    <project id="dalvik" type="jar" />
-    <project id="apache-http" type="jar" />
+    <project id="dalvik" template="maven-multi-jar.xml" />
+    <project id="apache-http" template="maven-multi-jar.xml" />
   </projects>
 </android-source>

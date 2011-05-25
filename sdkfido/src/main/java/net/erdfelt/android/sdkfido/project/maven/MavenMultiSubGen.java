@@ -24,10 +24,9 @@ import org.dom4j.io.SAXReader;
  * <li>exec:exec [aapt] (optional if ${project.basedir}/src/main/resources/AndroidManifest.xml exists)</li>
  * </ul>
  * </li>
- * <li>generate-resources
+ * <li>generate-sources
  * <ul>
- * <li>exec:exec [aidl-pre] (optional if *.aidl files exist)</li>
- * <li>exec:exec [aidl] (optional if *.aidl files exist)</li>
+ * <li>sdkfido:aidl [compile-aidl] (optional if *.aidl files exist)</li>
  * </ul>
  * </li>
  * <li>compile</li>

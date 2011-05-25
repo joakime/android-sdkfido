@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import net.erdfelt.android.sdkfido.util.PropertyExpander;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
@@ -80,6 +81,10 @@ public class FilteredFileUtil {
 
     public static String loadExpandedAsString(String resourceId, Map<String, String> props)
             throws OutputProjectException {
+        LOG.log(Level.INFO, "Loading resource: " + resourceId);
+        if (StringUtils.isBlank(resourceId)) {
+            throw new IllegalArgumentException("resourceId cannot be blank");
+        }
         URL url = FilteredFileUtil.class.getResource(resourceId);
         if (url == null) {
             throw new OutputProjectException("Unable to find resourceID: " + resourceId);

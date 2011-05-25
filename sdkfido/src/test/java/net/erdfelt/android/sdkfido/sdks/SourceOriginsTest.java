@@ -57,6 +57,23 @@ public class SourceOriginsTest {
         Assert.assertThat(prefix, repo, notNullValue());
         Assert.assertThat(prefix + ".basedirs.size", repo.getBasedirs().size(), greaterThanOrEqualTo(10));
     }
+    
+    @Test
+    public void testLoadDefaultProjects() throws IOException {
+        SourceOrigins sdks = SourceOriginsLoader.load();
+        Assert.assertNotNull("SourceOrigins should not be null", sdks);
+        
+        String prefix = "source-origins.projects[]";
+        Assert.assertEquals(prefix + ".length", 3, sdks.getProjects().size());
+        
+        prefix = "source-origins.projects[base]";
+        ProjectTemplate template = sdks.getProjectTemplate("base");
+        Assert.assertNotNull(prefix + " should not be null", template);
+        Assert.assertEquals(prefix + ".id", "base", template.getId());
+        Assert.assertEquals(prefix + ".groupId", "com.android.sdk", template.getGroupId());
+        Assert.assertEquals(prefix + ".artifactId", "base", template.getArtifactId());
+        Assert.assertEquals(prefix + ".id", "maven-multi-android.xml", template.getTemplateName());
+    }
 
     @Test
     public void testGetFetchTargets() throws IOException {

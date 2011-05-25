@@ -2,6 +2,7 @@ package net.erdfelt.android.sdkfido.project.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import net.erdfelt.android.sdkfido.project.AbstractOutputProject;
 import net.erdfelt.android.sdkfido.project.Dir;
 import net.erdfelt.android.sdkfido.project.OutputProject;
 import net.erdfelt.android.sdkfido.project.XmlBuildGen;
+import net.erdfelt.android.sdkfido.sdks.ProjectDependency;
+import net.erdfelt.android.sdkfido.sdks.ProjectTemplate;
 
 import org.apache.commons.io.FileUtils;
 
@@ -19,23 +22,42 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
     private static final String             STUB_MODULE_ID = "android-stub";
     private Map<String, MavenOutputProject> modules;
     private String                          activeModule   = "_unset_";
-    private String                          apilevel;
-    private String                          parentArtifactId;
-    private String                          parentVersion;
     private MavenMultiParentGen             parentgen;
     private XmlBuildGen                     stubgen;
     private JarListing                      stublisting;
     private Dir                             stubDir;
+    private Map<String, ProjectTemplate>    templates;
 
-    public MavenMultimoduleOutputProject(File projectDir, FetchTarget target) {
+    public MavenMultimoduleOutputProject(File projectDir, FetchTarget target, Collection<ProjectTemplate> templateList) {
         this.baseDir = new Dir(projectDir, toBaseDirName(target));
         this.modules = new HashMap<String, MavenOutputProject>();
-        this.parentArtifactId = MavenConstants.DEFAULT_ARTIFACTID;
-        this.parentVersion = target.getVersion().toString();
-        this.apilevel = target.getApilevel();
+        this.templates = new HashMap<String, ProjectTemplate>();
+        String parentArtifactId = MavenConstants.DEFAULT_ARTIFACTID;
+        String parentVersion = target.getVersion().toString();
+        String apilevel = target.getApilevel();
 
         parentgen = new MavenMultiParentGen(parentArtifactId, parentVersion, apilevel);
         stubgen = new MavenMultiStubGen(parentArtifactId, STUB_MODULE_ID, parentVersion, apilevel);
+
+        // Establish Template Map
+        for (ProjectTemplate pt : templateList) {
+            pt.setVersion(parentVersion);
+            pt.setParentVersion(parentVersion);
+            pt.setParentArtifactId(parentArtifactId);
+            pt.setApiLevel(apilevel);
+            templates.put(pt.getId(), pt);
+        }
+
+        // Blow out Dependencies into Map
+        for (String id : templates.keySet()) {
+            ProjectTemplate proj = templates.get(id);
+            if (!proj.getDependencies().isEmpty()) {
+                for (ProjectDependency dep : proj.getDependencies()) {
+                    dep.setProject(templates.get(dep.getRef()));
+                }
+            }
+            templates.put(proj.getId(), proj);
+        }
     }
 
     @Override
@@ -44,8 +66,9 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
         if (!modules.containsKey(this.activeModule)) {
             // Create new output module.
             File moduleDir = baseDir.getFile(projectId);
-            MavenMultiSubGen subgen = new MavenMultiSubGen(parentArtifactId, projectId, parentVersion, apilevel);
-            MavenOutputProject module = new MavenOutputProject(moduleDir, subgen);
+            ProjectTemplate template = templates.get(projectId);
+            ProjectTemplateProjectGen gen = new ProjectTemplateProjectGen(template);
+            MavenOutputProject module = new MavenOutputProject(moduleDir, gen);
             module.init();
             module.setCopierNarrowJar(stublisting);
             modules.put(this.activeModule, module);
@@ -87,11 +110,13 @@ public class MavenMultimoduleOutputProject extends AbstractOutputProject impleme
         for (String moduleId : modules.keySet()) {
             MavenOutputProject module = modules.get(moduleId);
 
-            MavenMultiSubGen subgen = (MavenMultiSubGen) module.getBuildGen();
+            if (module.getBuildGen() instanceof MavenMultiSubGen) {
+                MavenMultiSubGen subgen = (MavenMultiSubGen) module.getBuildGen();
 
-            // AAPT? Test for src/test/resources/AndroidManifest.xml
-            File androidManifestXml = module.getBaseDir().getFile("src/main/resources/AndroidManifest.xml");
-            subgen.setAndroidManifest(androidManifestXml);
+                // AAPT? Test for src/test/resources/AndroidManifest.xml
+                File androidManifestXml = module.getBaseDir().getFile("src/main/resources/AndroidManifest.xml");
+                subgen.setAndroidManifest(androidManifestXml);
+            }
 
             module.close();
             parentgen.addModule(moduleId);

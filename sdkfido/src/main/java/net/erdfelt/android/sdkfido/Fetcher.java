@@ -8,7 +8,6 @@ import net.erdfelt.android.sdkfido.git.GitMirrors;
 import net.erdfelt.android.sdkfido.git.IGit;
 import net.erdfelt.android.sdkfido.local.AndroidPlatform;
 import net.erdfelt.android.sdkfido.local.LocalAndroidPlatforms;
-import net.erdfelt.android.sdkfido.project.AidlCompiler;
 import net.erdfelt.android.sdkfido.project.OutputProject;
 import net.erdfelt.android.sdkfido.project.OutputProjectType;
 import net.erdfelt.android.sdkfido.project.SdkOutputProject;
@@ -47,7 +46,7 @@ public class Fetcher {
                 project = new MavenOutputProject(config.getOutputDir(), target);
                 break;
             case MAVEN_MULTI:
-                project = new MavenMultimoduleOutputProject(config.getOutputDir(), target);
+                project = new MavenMultimoduleOutputProject(config.getOutputDir(), target, origins.getProjects());
                 break;
             case SDK:
                 if(StringUtils.isBlank(target.getApilevel())) {
@@ -86,9 +85,6 @@ public class Fetcher {
         }
         
         if( (platforms != null) && (platforms.valid())) {
-            AidlCompiler.setAidlBin(platforms.getBin("aidl"));
-            project.setEnableAidlCompilation(true);
-
             if (target.getApilevel() != null) {
                 AndroidPlatform platform = platforms.getPlatform(target.getApilevel());
                 if(platform != null) {

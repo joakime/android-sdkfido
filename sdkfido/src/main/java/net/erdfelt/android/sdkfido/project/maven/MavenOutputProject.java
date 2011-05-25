@@ -8,7 +8,6 @@ import net.erdfelt.android.sdkfido.FetchException;
 import net.erdfelt.android.sdkfido.FetchTarget;
 import net.erdfelt.android.sdkfido.local.JarListing;
 import net.erdfelt.android.sdkfido.project.AbstractOutputProject;
-import net.erdfelt.android.sdkfido.project.AidlCompiler;
 import net.erdfelt.android.sdkfido.project.Dir;
 import net.erdfelt.android.sdkfido.project.JavaPathValidator;
 import net.erdfelt.android.sdkfido.project.OutputProject;
@@ -24,7 +23,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
     private static final Logger LOG        = Logger.getLogger(MavenOutputProject.class.getName());
     private Dir                 sourceDir;
     private Dir                 resourceDir;
-    private Dir                 outputDir;
     private SourceCopier        copier;
     private XmlBuildGen         buildgen;
 
@@ -32,7 +30,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
         baseDir = new Dir(projectDir, toBaseDirName(target));
         sourceDir = baseDir.getSubDir("src/main/java");
         resourceDir = baseDir.getSubDir("src/main/resources");
-        outputDir = baseDir.getSubDir("target/classes");
         buildgen = new MavenPackageGen(target);
     }
 
@@ -40,7 +37,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
         this.baseDir = new Dir(moduleDir);
         this.sourceDir = baseDir.getSubDir("src/main/java");
         this.resourceDir = baseDir.getSubDir("src/main/resources");
-        this.outputDir = baseDir.getSubDir("target/classes");
         this.buildgen = buildgen;
     }
 
@@ -70,17 +66,6 @@ public class MavenOutputProject extends AbstractOutputProject implements OutputP
             throw new FetchException(
                     "Java Source Validation Failed!  You might not have a valid set of source! (see console for details on why)",
                     e);
-        }
-
-        // AIDL Compile
-        if (enableAidlCompilation) {
-            outputDir.ensureEmpty();
-            AidlCompiler aidl = new AidlCompiler(baseDir);
-            try {
-                aidl.compile(sourceDir, resourceDir, outputDir);
-            } catch (IOException e) {
-                throw new FetchException("AIDL Compilation Failure: " + e.getMessage(), e);
-            }
         }
 
         // Create pom.xml

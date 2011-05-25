@@ -74,7 +74,7 @@ public class SourceCopier {
                 relpath = PathUtil.toRelativePath(basedir, path);
                 name = path.getName();
                 countCopied++;
-                if (name.endsWith(".java")) {
+                if (name.endsWith(".java") || name.endsWith(".aidl")) {
                     if (javalisting.contains(relpath)) {
                         countHits++;
                     } else {

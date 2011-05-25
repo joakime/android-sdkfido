@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>@GROUPID@</groupId>
+    <artifactId>@PARENT_ARTIFACTID@</artifactId>
+    <version>@VERSION@</version>
+  </parent>
+  <groupId>@GROUPID@</groupId>
+  <artifactId>@ARTIFACTID@</artifactId>
+  <packaging>jar</packaging>
+  <build>
+    <plugins />
+  </build>
+</project>
