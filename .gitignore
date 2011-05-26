@@ -3,3 +3,4 @@
 /.settings
 /target
 *.swp
+.DS_Store
