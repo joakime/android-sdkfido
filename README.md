@@ -9,8 +9,6 @@ it can be used for in-place source browsing while in an IDE.
 Many developers have asked for the source jar from Google by filing and starring
 a now famous [code.google.com issue #979](http://code.google.com/p/android/issues/detail?id=979)
 
-    (http://code.google.com/p/android/issues/detail?id=979)
-
 So, just to scratch an itch of my own, I decided to wrap up a jgit client, some
 metadata describing where to find the source, how to assemble it, and put some
 maven project generation logic into the mix as well.
