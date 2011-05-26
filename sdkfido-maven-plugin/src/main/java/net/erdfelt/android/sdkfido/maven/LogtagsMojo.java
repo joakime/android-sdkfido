@@ -1,8 +1,11 @@
 package net.erdfelt.android.sdkfido.maven;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -40,34 +43,50 @@ public class LogtagsMojo extends AbstractSdkFidoMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         getLog().debug("Output Dir: " + outputDirectory);
 
-        String[] logtags = findLogtags();
-        if (logtags == null || logtags.length <= 0) {
+        Map<File, String[]> logtagMap = findLogtags();
+        int tagCount = 0;
+
+        for (String[] tags : logtagMap.values()) {
+            tagCount += tags.length;
+        }
+
+        if (tagCount <= 0) {
             getLog().info("No LOGTAGS found, skipping sdkfido:logtags goal");
             return;
         }
 
         ensureDirExists(outputDirectory);
-        getLog().info("Compiling " + logtags.length + " AIDL file(s) ...");
-        for (String logtag : logtags) {
-            getLog().debug("Logtag: " + logtag);
-            compileLogtag(logtag);
+        getLog().info("Compiling " + tagCount + " AIDL file(s) ...");
+        for (Map.Entry<File, String[]> entry : logtagMap.entrySet()) {
+            File basedir = entry.getKey();
+            for (String logtag : entry.getValue()) {
+                getLog().debug("Logtag: " + logtag);
+                compileLogtag(basedir, logtag);
+            }
         }
 
-        getLog().info("Success: " + logtags.length + " LOGTAG(s) compiled into java source files");
+        getLog().info("Success: " + tagCount + " LOGTAG(s) compiled into java source files");
         project.addCompileSourceRoot(outputDirectory.getAbsolutePath());
     }
 
-    private void compileLogtag(String logtag) {
-        // TODO Auto-generated method stub
-
+    private void compileLogtag(File basedir, String logtagPath) throws MojoExecutionException {
+        File tagfile = new File(basedir, logtagPath);
+        try {
+            LogTags tags = new LogTags(tagfile);
+            StringBuilder javapath = new StringBuilder();
+            javapath.append(tags.getPackageName().replace('.', File.separatorChar));
+            javapath.append(File.separatorChar).append(tags.getClassName());
+            javapath.append(".java");
+            File javaFile = new File(outputDirectory, javapath.toString());
+            ensureDirExists(javaFile.getParentFile());
+            tags.writeJavaSource(javaFile);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to compile logtag into java", e);
+        }
     }
 
-    private String[] findLogtags() {
-        DirectoryScanner scanner = new DirectoryScanner();
-        scanner.addDefaultExcludes();
-
-        List<String> patternIncludes = new ArrayList<String>();
-        List<String> patternExcludes = new ArrayList<String>();
+    private Map<File, String[]> findLogtags() {
+        Map<File, String[]> tags = new HashMap<File, String[]>();
 
         if (includes == null || includes.length == 0) {
             includes = new String[] { "**/*.logtags" };
@@ -76,42 +95,43 @@ public class LogtagsMojo extends AbstractSdkFidoMojo {
             excludes = new String[0];
         }
 
-        patternExcludes.add("target/**");
+        getLog().debug("  Includes: " + toString(includes));
+        getLog().debug("  Excludes: " + toString(excludes));
 
         @SuppressWarnings("unchecked")
         List<Resource> resources = project.getResources();
         File resourceDir;
         for (Resource resource : resources) {
             resourceDir = new File(resource.getDirectory());
-            for (String include : resource.getIncludes()) {
-                patternIncludes.add(relativeToBasedir(resourceDir, '/' + include));
-            }
-            for (String exclude : resource.getExcludes()) {
-                patternExcludes.add(relativeToBasedir(resourceDir, '/' + exclude));
-            }
-            for (String include : includes) {
-                patternIncludes.add(relativeToBasedir(resourceDir, '/' + include));
-            }
-            for (String exclude : excludes) {
-                patternExcludes.add(relativeToBasedir(resourceDir, '/' + exclude));
+
+            DirectoryScanner scanner = new DirectoryScanner();
+            scanner.addDefaultExcludes();
+            scanner.setIncludes(merged(includes, resource.getIncludes()));
+            scanner.setExcludes(merged(excludes, resource.getExcludes()));
+            scanner.setBasedir(resourceDir);
+            scanner.scan();
+
+            String hits[] = scanner.getIncludedFiles();
+            if ((hits != null) && (hits.length > 0)) {
+                tags.put(resourceDir, hits);
             }
         }
 
-        scanner.setIncludes(patternIncludes.toArray(new String[0]));
-        scanner.setExcludes(patternExcludes.toArray(new String[0]));
-        getLog().debug("  Includes: " + toString(patternIncludes));
-        getLog().debug("  Excludes: " + toString(patternExcludes));
-        scanner.setBasedir(project.getBasedir());
-        scanner.scan();
-
-        return scanner.getIncludedFiles();
+        return tags;
     }
 
-    private String relativeToBasedir(File dir, String path) {
-        File fulldir = new File(dir, OS(path));
-        File basedir = project.getBasedir();
-        String relativePath = basedir.toURI().relativize(fulldir.toURI()).toASCIIString();
-        return OS(relativePath);
+    private String[] merged(String[] strArray, List<String> strList) {
+        List<String> ret = new ArrayList<String>();
+        for (String str : strList) {
+            if (!ret.contains(str)) {
+                ret.add(str);
+            }
+        }
+        for (String str : strArray) {
+            if (!ret.contains(str)) {
+                ret.add(str);
+            }
+        }
+        return ret.toArray(new String[0]);
     }
-
 }

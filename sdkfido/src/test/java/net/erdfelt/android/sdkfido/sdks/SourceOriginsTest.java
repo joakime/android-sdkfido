@@ -64,7 +64,7 @@ public class SourceOriginsTest {
         Assert.assertNotNull("SourceOrigins should not be null", sdks);
         
         String prefix = "source-origins.projects[]";
-        Assert.assertEquals(prefix + ".length", 3, sdks.getProjects().size());
+        Assert.assertEquals(prefix + ".length", 4, sdks.getProjects().size());
         
         prefix = "source-origins.projects[base]";
         ProjectTemplate template = sdks.getProjectTemplate("base");

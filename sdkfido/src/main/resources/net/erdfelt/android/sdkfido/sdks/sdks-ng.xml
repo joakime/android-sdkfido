@@ -43,6 +43,8 @@
     <repo url="git://android.git.kernel.org/platform/frameworks/base.git">
       <basedir path="core/java" project="base" />
       <basedir path="core/res" project="base" />
+      <basedir path="core/config/sdk" project="base" />
+      <basedir path="keystore/java" project="base" />
       <basedir path="graphics/java" project="base" />
       <basedir path="sax/java" project="base" />
       <basedir path="opengl/java" project="base" />
@@ -54,6 +56,12 @@
       <basedir path="wifi/java" project="base" />
       <basedir path="telephony/java" project="base" />
       <basedir path="test-runner/src" project="base" />
+    </repo>
+    <repo url="git://android.git.kernel.org/platform/frameworks/policies/base.git">
+      <basedir path="phone" project="base" />
+    </repo>
+    <repo url="git://android.git.kernel.org/platform/external/tagsoup.git">
+      <basedir path="src" project="tagsoup" />
     </repo>
     <repo url="git://android.git.kernel.org/platform/external/apache-http.git">
       <basedir path="src" project="apache-http" />
@@ -89,7 +97,9 @@
   </repos>
   
   <projects>
+    <project id="tagsoup" template="maven-multi-jar.xml" />
     <project id="base" template="maven-multi-android.xml">
+      <dependency ref="tagsoup" />
       <dependency ref="dalvik" />
       <dependency ref="apache-http" />
     </project>

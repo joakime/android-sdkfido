@@ -37,6 +37,8 @@ public class AaptResourceGenMojo extends AbstractSdkFidoMojo {
             getLog().info("Skipping, no AndroidManifest.xml found in declared resource directories");
             return;
         }
+        
+        getLog().info("Compiling /res/ into R.java ...");
 
         getLog().debug(" /res/ Dir: " + resDir);
         getLog().debug("  Manifest: " + manifestXml);

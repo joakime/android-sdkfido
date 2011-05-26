@@ -9,8 +9,72 @@
   <groupId>@GROUPID@</groupId>
   <artifactId>@ARTIFACTID@</artifactId>
   <packaging>jar</packaging>
+  <properties>
+    <dalvik-jar>${project.build.directory}/dependency/dalvik.jar</dalvik-jar>
+  </properties>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dalvik-jar</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>dalvik</artifactId>
+                  <version>${project.version}</version>
+                  <overWrite>true</overWrite>
+                  <destFileName>dalvik.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <compilerArguments>
+            <bootclasspath>${project.build.directory}/dependency/dalvik.jar</bootclasspath>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <bootclasspathArtifacts>
+            <bootclasspathArtifact>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>dalvik</artifactId>
+              <version>${project.version}</version>
+            </bootclasspathArtifact>
+          </bootclasspathArtifacts>
+          <tags>
+            <tag>
+              <name>hide</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>attr</name>
+              <placement>X</placement>
+            </tag>
+            <tag>
+              <name>more</name>
+              <placement>X</placement>
+            </tag>
+          </tags>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>net.erdfelt.android.sdkfido</groupId>
         <artifactId>sdkfido-maven-plugin</artifactId>
@@ -18,7 +82,6 @@
         <executions>
           <execution>
             <id>build-aidl</id>
-            <phase>generate-sources</phase>
             <goals>
               <goal>aidl</goal>
             </goals>
@@ -27,6 +90,18 @@
                 <exclude>**/com/android/internal/view/IInputConnectionCallback.aidl</exclude>
               </excludes>
             </configuration>
+          </execution>
+          <execution>
+            <id>build-r</id>
+            <goals>
+              <goal>aapt-resource-gen</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>build-logtags</id>
+            <goals>
+              <goal>logtags</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
