@@ -24,7 +24,7 @@ Now go into the sdkfido project and run the main jar (will automatically pull
 in the associated jars in /lib/ by itself, no need to create a classpath yourself)
 
     [android-sdkfido]$ cd sdkfido
-    [sdkfido]$ java -Xmx512m -jar target/sdkfido-1.0-SNAPSHOT.jar --outputType MAVEN_MULTI --outputDirectory $HOME/maven-android froyo
+    [sdkfido]$ java -Xmx512m -jar target/sdkfido-1.0-SNAPSHOT.jar --outputType MAVEN_MULTI --outputDir $HOME/maven-android froyo
 
 At this point you should see the git processes to checkout the various git trees,
 and setup the maven multimodule project tree.
@@ -76,7 +76,7 @@ Example below:
 Fetch Targets
 -------------
 
-A Fetch Target in sdkfido is a simple string indicating what you wantn to fetch
+A Fetch Target in sdkfido is a simple string indicating what you want to fetch
 and have a project built from.
 
 SdkFido supports target names as APILEVELS, CODENAME, VERSION, TAG, or BRANCH ids.
