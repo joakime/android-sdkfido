@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>net.erdfelt.android.sdkfido</groupId>
-      <artifactId>sdkfido-lib</artifactId>
+      <artifactId>sdkfido</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
