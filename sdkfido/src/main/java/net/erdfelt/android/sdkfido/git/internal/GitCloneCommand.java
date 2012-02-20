@@ -23,21 +23,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-
 import net.erdfelt.android.sdkfido.git.IGit;
 
+import org.eclipse.jgit.dircache.DirCache;
+import org.eclipse.jgit.dircache.DirCacheCheckout;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.GitIndex;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefComparator;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.TextProgressMonitor;
-import org.eclipse.jgit.lib.Tree;
-import org.eclipse.jgit.lib.WorkDirCheckout;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepository;
@@ -140,12 +138,10 @@ public class GitCloneCommand {
         RefUpdate u = repo.updateRef(Constants.HEAD);
         u.setNewObjectId(commit.getId());
         u.forceUpdate();
-
-        GitIndex index = new GitIndex(repo);
-        Tree tree = repo.mapTree(commit.getTree());
-        WorkDirCheckout co = new WorkDirCheckout(repo, repo.getWorkTree(), index, tree);
+        
+        DirCache dc = repo.lockDirCache();
+        DirCacheCheckout co = new DirCacheCheckout(repo,dc,commit.getTree());
         co.checkout();
-        index.write();
     }
 
     /**
